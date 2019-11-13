@@ -9,7 +9,6 @@ import java.util.Date;
  * @Description:
  * @Author: wangyinjia
  * @Date: 2019/9/27
- * @Company: kiisoo
  * @Version: 1.0
  */
 @Data

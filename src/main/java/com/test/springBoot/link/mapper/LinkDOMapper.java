@@ -11,7 +11,6 @@ import java.util.Map;
  * @Description:
  * @Author: wangyinjia
  * @Date: 2019/9/6
- * @Company: kiisoo
  * @Version: 1.0
  */
 public interface LinkDOMapper extends BaseMapper<TestDO> {

@@ -12,7 +12,6 @@ import java.util.Properties;
  * @Description: 消费者
  * @Author: wangyinjia
  * @Date: 2019/10/28
- * @Company: kiisoo
  * @Version: 1.0
  */
 @Service

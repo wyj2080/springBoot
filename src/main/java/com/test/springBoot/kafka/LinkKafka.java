@@ -12,7 +12,6 @@ import java.util.Map;
  * @Description: 连接kafka
  * @Author: wangyinjia
  * @Date: 2019/10/28
- * @Company: kiisoo
  * @Version: 1.0
  */
 @Controller
