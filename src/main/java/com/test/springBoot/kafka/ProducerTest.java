@@ -20,6 +20,7 @@ public class ProducerTest {
     @Autowired
     KafkaProducer kafkaProducer;
     public void send(){
-        kafkaProducer.send("test","msg test java");
+        kafkaProducer.send("jcftest","msg jcf");
+        kafkaProducer.send("joker","msg joker");
     }
 }

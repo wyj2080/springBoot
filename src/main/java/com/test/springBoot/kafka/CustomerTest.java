@@ -28,12 +28,12 @@ public class CustomerTest {
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(properties);
-        kafkaConsumer.subscribe(Arrays.asList("test"));
+        kafkaConsumer.subscribe(Arrays.asList("jcftest","joker"));
         while (true) {
             ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
-                System.out.printf("offset = %d, value = %s", record.offset(), record.value());
-                System.out.println("=====================>");
+                System.out.printf("topic = %s, offset = %d, value = %s, partion = %s", record.topic(), record.offset(), record.value(), record.partition());
+                System.out.println("====================================>");
             }
         }
 //        kafkaConsumer.close();

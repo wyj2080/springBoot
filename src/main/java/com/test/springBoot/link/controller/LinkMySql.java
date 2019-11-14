@@ -1,7 +1,5 @@
 package com.test.springBoot.link.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.test.springBoot.link.entity.TestDO;
 import com.test.springBoot.link.mapper.LinkDOMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
