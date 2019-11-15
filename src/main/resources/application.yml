@@ -14,5 +14,8 @@ spring:
     password: p2p
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+redis:
+  servers: 45.32.66.42
+
 
 
