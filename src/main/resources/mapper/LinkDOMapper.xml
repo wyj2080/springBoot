@@ -5,7 +5,6 @@
 <select id="selectShop" resultType="Map">
     select *
     from t_shop
-    where shop_id=4998
 </select>
 
 </mapper>
