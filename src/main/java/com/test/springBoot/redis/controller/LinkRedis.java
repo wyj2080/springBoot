@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import redis.clients.jedis.Jedis;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description: 连接redis
@@ -41,6 +40,50 @@ public class LinkRedis {
         System.out.println("username:" + jedis.get("username") + ",password:" + jedis.get("password"));
         System.out.println(jedis.get("unknowKey"));
         System.out.println(jedis.get("unknowKey") == null);
+        return new HashMap<>();
+    }
+
+    @RequestMapping(value = "/performance", method = RequestMethod.GET)
+    public Map<String, Object> performance(){
+
+        Integer num = 10000;
+        List<Integer> list = new ArrayList<>();
+        for(int i=0;i<num;i++){
+            list.add(i);
+        }
+//        Date s = new Date();
+//        list.forEach(a->{
+//            Date tmp1 = new Date();
+//            Jedis jedis = new Jedis(servers);
+//            String status = jedis.set(""+a,""+a);
+//            jedis.close();
+//            Date tmp2 = new Date();
+//            System.out.println(status+":"+(tmp2.getTime()-tmp1.getTime())+"ms");
+//        });
+//        Date e = new Date();
+//        System.out.println(num+"条串行插入完成耗时："+(e.getTime()-s.getTime()));
+        Date c = new Date();
+        Vector<Integer> errorList = new Vector<>();
+        list.parallelStream().forEach(a->{
+            try{
+                Date tmp1 = new Date();
+                Jedis jedisPara = new Jedis(servers);
+                jedisPara.set(""+a,""+a);
+                jedisPara.close();
+                Date tmp2 = new Date();
+                System.out.println(a+":"+(tmp2.getTime()-tmp1.getTime())+"ms");
+            }catch (Exception e){
+                System.out.println("发送出错=========================>，number:"+a);
+                errorList.add(a);
+            }finally {
+
+            }
+
+        });
+        Date d = new Date();
+        System.out.println(num+"条并行插入完成耗时："+(d.getTime()-c.getTime()));
+        System.out.println("发送出错list:"+errorList.toString());
+        System.out.println("综上成功："+(num-errorList.size())+"条,出错："+errorList.size()+"条");
         return new HashMap<>();
     }
 
