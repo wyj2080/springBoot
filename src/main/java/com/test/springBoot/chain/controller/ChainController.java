@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * @Description: 链条
+ * @Description: 链条(逐级调用)
  * 大家都继承自链条规则抽象类，然后一级一级往下找，找到就返回
  * @Author: wangyinjia
  * @Date: 2019/11/25
