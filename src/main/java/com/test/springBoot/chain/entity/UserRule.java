@@ -21,8 +21,6 @@ public class UserRule extends ChainRule{
             List<Long> shopIds = new ArrayList<>();
             outputDO.setEntitys(shopIds);
             outputDO.setType(USER_TYPE);
-        }else{
-            outputDO = chainRule.execute(param);
         }
         return outputDO;
     }
