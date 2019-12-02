@@ -55,6 +55,12 @@ public class ExcelController {
                 +System.currentTimeMillis()+ ".xlsx");
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         wb.write(output);
+        //查数据list
+
+        //workbook创建到sheet
+
+        //生成excel，(内含标题，表头，合并，数据4个方法)
+
         return response;
     }
 
