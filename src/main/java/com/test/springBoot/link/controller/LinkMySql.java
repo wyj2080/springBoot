@@ -1,7 +1,7 @@
 package com.test.springBoot.link.controller;
 
 import com.github.pagehelper.PageHelper;
-import com.test.springBoot.link.entity.TestDO;
+import com.test.springBoot.link.entity.AccountDO;
 import com.test.springBoot.link.mapper.LinkDOMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -42,7 +42,7 @@ public class LinkMySql{
         Map<String,Object> result = new HashMap<>();
         //物理分页，需引入maven
         PageHelper.startPage(pageNum,pageSize);
-        List<TestDO> list = linkDOMapper.selectList(null);
+        List<AccountDO> list = linkDOMapper.selectList(null);
         list.forEach(listDO -> System.out.println(listDO.toString()));
         return result;
     }

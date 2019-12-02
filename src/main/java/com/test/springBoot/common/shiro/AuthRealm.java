@@ -1,11 +1,10 @@
 package com.test.springBoot.common.shiro;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.test.springBoot.link.entity.TestDO;
+import com.test.springBoot.link.entity.AccountDO;
 import com.test.springBoot.link.mapper.LinkDOMapper;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +31,12 @@ public class AuthRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        TestDO testDO = new TestDO();
+        AccountDO testDO = new AccountDO();
         UsernamePasswordToken authToken = (UsernamePasswordToken)token;
         testDO.setName(authToken.getUsername());
-        QueryWrapper<TestDO> wrapper = new QueryWrapper<>();
+        QueryWrapper<AccountDO> wrapper = new QueryWrapper<>();
         wrapper.eq("login",testDO.getName());
-        List<TestDO> list = linkDOMapper.selectList(wrapper);
+        List<AccountDO> list = linkDOMapper.selectList(wrapper);
         if(list == null || list.size() == 0){
             throw new UnknownAccountException();
         }else{

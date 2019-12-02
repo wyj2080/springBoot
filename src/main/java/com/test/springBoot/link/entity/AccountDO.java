@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Data
 @TableName("privilage_account")
-public class TestDO {
+public class AccountDO {
     private Long id;
     private String login;
     private String name;
