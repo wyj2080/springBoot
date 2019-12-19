@@ -1,16 +1,15 @@
 package com.test.springBoot.common.tools;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description: 常用工具类演示
@@ -56,5 +55,12 @@ public class CommonToolsController {
         System.out.println(ArrayUtils.isEmpty(s));
         System.out.println(ArrayUtils.isEmpty(s1));
         System.out.println(ArrayUtils.isEmpty(s2));
+    }
+
+    @RequestMapping(value = "/digest", method = RequestMethod.GET)
+    public void digestTest(){
+        String d = DigestUtils.sha256("username").toString();
+        DateUtils.isSameDay(new Date(),new Date());
+        System.out.println(d);
     }
 }
