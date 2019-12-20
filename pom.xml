@@ -101,11 +101,12 @@
 			<version>3.13</version>
 		</dependency>
 
-		<!--<dependency>
+		<!--kafka-->
+		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka-clients</artifactId>
 			<version>0.11.0.0</version>
-		</dependency>-->
+		</dependency>
 
 		<!--BeanUtils对象操作-->
 		<dependency>

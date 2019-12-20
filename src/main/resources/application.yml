@@ -1,9 +1,12 @@
 mybatis:
   mapperLocations: classpath:mapper/*.xml
 
+kafka:
+  servers: 173.82.105.141:9092,173.82.238.114:9092
+
 kiisoo:
   kafka:
-    servers: 45.32.66.42:9092
+    servers: 173.82.105.141:9092,173.82.238.114:9092
     producer:
       key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
       value-serializer-class: org.apache.kafka.common.serialization.StringSerializer
