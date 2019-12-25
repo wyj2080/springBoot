@@ -24,15 +24,23 @@ public class LinkKafka {
     @RequestMapping(value = "/send", method = RequestMethod.GET)
     public Map<String, Object> send() throws InterruptedException {
         producerTest.send("test","消息1");
-//        CustomerTest customerTest = new CustomerTest();
-//        customerTest.receive();
-//        customerTest.receive();
         return new HashMap<>();
     }
 
+    @RequestMapping(value = "/close", method = RequestMethod.GET)
+    public Map<String, Object> close() throws InterruptedException {
+        producerTest.close();
+        customerTest.close();
+        return new HashMap<>();
+    }
+
+    /**
+     * 接收消息
+     * 注：不能多线程抽数据
+     */
     @RequestMapping(value = "/receive", method = RequestMethod.GET)
     public Map<String, Object> receive() throws InterruptedException {
-        customerTest.receive();
+        customerTest.receive(1);
         return new HashMap<>();
     }
 

@@ -18,30 +18,60 @@ import java.util.Properties;
  */
 @Service
 public class CustomerTest {
-        //服务器
-    @Value("${kafka.servers}")
-    private String servers;
-    public void receive() throws InterruptedException {
-        Properties properties = new Properties();
+    //连接参数
+    private Properties properties;
+
+    //消费者
+    private KafkaConsumer<String, String> kafkaConsumer;
+    /**
+     * 消费组构造
+     * @param servers 服务器
+     */
+    CustomerTest(@Value("${kafka.servers}") String servers){
+        properties = new Properties();
         properties.put("bootstrap.servers", servers);
         properties.put("group.id", "group-1");
         properties.put("enable.auto.commit", "true");
         properties.put("auto.commit.interval.ms", "1000");
         properties.put("auto.offset.reset", "earliest");
         properties.put("session.timeout.ms", "30000");
+        properties.put("max.poll.records","1000");
         properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        kafkaConsumer = new KafkaConsumer<>(properties);
+    }
 
-        KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(properties);
+    /**
+     * 接收消息
+     * @param size 条数
+     * @throws InterruptedException
+     */
+    public void receive(Integer size) throws InterruptedException {
         kafkaConsumer.subscribe(Arrays.asList("jcftest","joker","test"));
-        while (true) {
-            ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
-            for (ConsumerRecord<String, String> record : records) {
-                System.out.printf("topic = %s, offset = %d, value = %s, partion = %s", record.topic(), record.offset(), record.value(), record.partition());
-                System.out.println("====================================>");
+        Integer num = 0;
+        if(size != null){
+            for(int i = 0;i<size;i++){
+                ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
+                for (ConsumerRecord<String, String> record : records) {
+                    System.out.printf("topic = %s, offset = %d, value = %s, partion = %s", record.topic(), record.offset(), record.value(), record.partition());
+                    System.out.println("====================================>");
+                    num++;
+                }
+            }
+            System.out.println(num+"条");
+        }else{
+            while (true) {
+                ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
+                for (ConsumerRecord<String, String> record : records) {
+                    System.out.printf("topic = %s, offset = %d, value = %s, partion = %s", record.topic(), record.offset(), record.value(), record.partition());
+                    System.out.println("====================================>");
+                }
             }
         }
-//        kafkaConsumer.close();
 
+    }
+
+    public void close(){
+        kafkaConsumer.close();
     }
 }
