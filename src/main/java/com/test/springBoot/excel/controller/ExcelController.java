@@ -40,6 +40,7 @@ public class ExcelController {
     LinkDOMapper linkDOMapper;
     /**
      * 导出excel
+     * 注：ajax调没用的，前台window.open("url")
      * @param response http响应
      */
     @RequestMapping(value = "/output", method = RequestMethod.GET)
