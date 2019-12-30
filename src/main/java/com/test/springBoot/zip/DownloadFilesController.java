@@ -13,7 +13,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * @Description:
+ * @Description: 下载zip
+ * 注：不要用ajax调
  * @Author: wangyinjia
  * @Date: 2019/12/27
  * @Company: kiisoo
