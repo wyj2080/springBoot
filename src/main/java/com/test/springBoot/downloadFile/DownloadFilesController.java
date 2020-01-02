@@ -1,14 +1,16 @@
-package com.test.springBoot.zip;
+package com.test.springBoot.downloadFile;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -21,9 +23,9 @@ import java.util.zip.ZipOutputStream;
  * @Version: 1.0
  */
 @Controller
-@RequestMapping("test")
+@RequestMapping("download")
 public class DownloadFilesController {
-    @GetMapping(value = "/aaa")
+    @GetMapping(value = "/zip")
     public void downloadFile(HttpServletResponse response) throws Exception {
         byte[] buffer = new byte[1024];
 
@@ -66,4 +68,27 @@ public class DownloadFilesController {
         return inputStream;
 
     }
+
+    @GetMapping(value = "/one")
+    public void downloadOneFile(HttpServletResponse response, String url) throws Exception {
+        byte[] buffer = new byte[1024];
+        String fileName = "文件名";
+        // IE浏览器
+        fileName = URLEncoder.encode(fileName, "utf-8");
+        fileName = fileName.replace("+", " ");
+        response.setContentType("application/x-msdownload"); // 设置内容类型为下载类型
+        response.addHeader("Content-Disposition", "attachment;filename="+new String(fileName.getBytes(),"iso-8859-1"));
+        ServletOutputStream outputStream = response.getOutputStream();
+        InputStream inStream = null;
+        inStream = getInputStream(url);
+        int len;
+        // 读入需要下载的文件的内容
+        while ((len = inStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, len);
+        }
+        inStream.close();
+        outputStream.flush();
+        outputStream.close();
+    }
+
 }

@@ -40,7 +40,7 @@ public class LinkKafka {
      */
     @RequestMapping(value = "/receive", method = RequestMethod.GET)
     public Map<String, Object> receive() throws InterruptedException {
-        customerTest.receive(1);
+        customerTest.receive(null);
         return new HashMap<>();
     }
 
