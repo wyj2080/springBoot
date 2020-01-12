@@ -12,9 +12,9 @@ import java.io.InputStreamReader;
 public class cmdMain {
     public static void main(String[] args){
         try {
-//            String[] cmd = new String[]{"/bin/sh", "-c", " ls "};
-            String[] cmd = new String[]{"ipconfig"};
-            Process ps = Runtime.getRuntime().exec(cmd);
+            String cmd = "ipconfig";
+            String[] cmdA = new String[]{"/bin/sh", "-c", cmd};
+            Process ps = Runtime.getRuntime().exec(cmdA);
             BufferedReader br = new BufferedReader(new InputStreamReader(ps.getInputStream(), "GBK"));
             StringBuffer sb = new StringBuffer();
             String line;
