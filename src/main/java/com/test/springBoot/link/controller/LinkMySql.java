@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -40,12 +41,16 @@ public class LinkMySql{
     public Map<String,Object> sc(@RequestParam(value="pageNum",required=false,defaultValue="1") Integer pageNum,
                                  @RequestParam(value="pageSize",required=false,defaultValue="10") Integer pageSize){
         Map<String,Object> result = new HashMap<>();
+        //2个0就是不分页
+//        pageNum = 0;
+//        pageSize = 0;
         //物理分页，需引入maven
         PageHelper.startPage(pageNum,pageSize);
         List<AccountDO> list = linkDOMapper.selectList(null);
         list.forEach(listDO -> System.out.println(listDO.toString()));
         return result;
     }
+
 
     @RequestMapping(value = "/shiro", method = RequestMethod.GET)
     public Map<String,Object> shiro(){
