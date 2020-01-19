@@ -18,7 +18,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 redis:
-  servers: 45.32.66.42
+  servers: 173.82.105.141:6379
 
 
 
