@@ -27,9 +27,17 @@ public class ShiroController {
     private DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
 
     /**
-     * 初始化账号list
+     * 构造函数
      */
     private ShiroController(){
+        //初始化账号list
+        initUserList();
+    }
+
+    /**
+     * 初始化账号list
+     */
+    public void initUserList(){
         //初始化数据源,实际是要从数据库读取的
         accountRealm.addAccount("congzhizhi", "123");
         accountRealm.addAccount("jackc", "4567");
