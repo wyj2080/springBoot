@@ -6,6 +6,7 @@ package com.test.springBoot.java8;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
@@ -85,13 +86,13 @@ public class Lambda {
      */
     @RequestMapping(value = "/stream", method = RequestMethod.GET)
     @ResponseBody
-    public void stream() throws ParseException {
+    public Map<String, Object> stream() throws ParseException {
         UserDO userDO = new UserDO();
-        userDO.setId(1L);userDO.setAge(new Integer(10));userDO.setCars(Arrays.asList("a","b"));
+        userDO.setId(1L);userDO.setAge(new Integer(10));userDO.setCarDO(new CarDO("奔驰"));
         UserDO userDO2 = new UserDO();
-        userDO2.setId(2L);userDO2.setAge(20);userDO2.setCars(Arrays.asList("c","d"));
+        userDO2.setId(2L);userDO2.setAge(10);userDO2.setCarDO(new CarDO("宝马"));
         UserDO userDO3 = new UserDO();
-        userDO3.setId(1L);userDO3.setAge(new Integer(10));userDO3.setCars(Arrays.asList("a","b"));
+        userDO3.setId(2L);userDO3.setAge(new Integer(10));
         List<UserDO> userList = Arrays.asList(userDO, userDO2, userDO3);
 
 //        List<String> cars = new ArrayList<>();
@@ -99,27 +100,19 @@ public class Lambda {
 //            cars.addAll(user.getCars());
 //        });
 
+        List<Integer> list = Arrays.asList(1,2,3,4,5);
+        List<Integer> list2 = list.stream().filter(a->a==6).collect(Collectors.toList());
+        list2.forEach(System.out::println);
 
-        Map<String,Object> map1 = new HashMap<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        map1.put("time",new Integer("123"));
-        map1.put("name",sdf.parse("2020-01-01"));
-        map1.put("age","123");
-        map1.put("aa","aaa");
-        map1.put("bb","123");
-        map1.put("cc","aaa");
-        Map<String,Object> map2 = new HashMap<>(10100);
-        map2.put("name",sdf.parse("2020-01-01"));
-        map2.put("time",new Integer("123"));
-        map2.put("age","123");
-        map2.put("aa","aaa");
-        map2.put("bb","123");
-        map2.put("cc","aaa");
+        return new HashMap<>();
 
-        List<Map<String,Object>> mapList = Arrays.asList(map1,map2);
-        List<Map<String,Object>>result = mapList.stream().distinct().collect(Collectors.toList());
 
-        System.out.println(result.size());
+    }
+
+    public UserDO getUserByDB(Long name){
+        UserDO userDO = new UserDO();
+        userDO.setId(6L);userDO.setAge(18);userDO.setCarDO(new CarDO("奥里给"));
+        return userDO;
     }
 
 

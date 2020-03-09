@@ -1,5 +1,7 @@
 package com.test.springBoot.link.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.test.springBoot.link.entity.AccountDO;
 import com.test.springBoot.link.mapper.LinkDOMapper;
@@ -42,11 +44,14 @@ public class LinkMySql{
                                  @RequestParam(value="pageSize",required=false,defaultValue="10") Integer pageSize){
         Map<String,Object> result = new HashMap<>();
         //2个0就是不分页
-//        pageNum = 0;
-//        pageSize = 0;
+        pageNum = 0;
+        pageSize = 0;
         //物理分页，需引入maven
+        QueryWrapper<AccountDO> wrapper = new QueryWrapper<>();
+        wrapper.eq("id",5523);
         PageHelper.startPage(pageNum,pageSize);
-        List<AccountDO> list = linkDOMapper.selectList(null);
+        Page<AccountDO> list = (Page<AccountDO>)linkDOMapper.selectList(wrapper);
+        System.out.println(list.getPages());
         list.forEach(listDO -> System.out.println(listDO.toString()));
         return result;
     }

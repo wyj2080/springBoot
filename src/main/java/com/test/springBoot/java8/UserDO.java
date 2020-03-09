@@ -19,4 +19,7 @@ public class UserDO {
     Integer age;
 
     List<String> cars;
+
+    /**车*/
+    private CarDO carDO;
 }
