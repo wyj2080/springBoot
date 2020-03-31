@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,7 +32,7 @@ public class Java8Controller {
         SellerDO sellerDO3 = new SellerDO(3L, "江五", 24, new BigDecimal("300.5"));
         SellerDO sellerDO4 = new SellerDO(4L, "朱六", 19, new BigDecimal("300.2"));
         SellerDO sellerDO5 = new SellerDO(5L, "蒋七", 25, new BigDecimal("300.8"));
-        SellerDO sellerDO6 = new SellerDO(6L, "金八", 16, new BigDecimal(3000));
+        SellerDO sellerDO6 = new SellerDO(6L, "汪何八", 16, new BigDecimal(3000));
         List<SellerDO> sellerList1 = Arrays.asList(sellerDO1, sellerDO2);
         List<SellerDO> sellerList2 = Arrays.asList(sellerDO3, sellerDO4);
         List<SellerDO> sellerList3 = Arrays.asList(sellerDO5, sellerDO6);
@@ -51,23 +52,14 @@ public class Java8Controller {
     @RequestMapping(value = "/iterator", method = RequestMethod.GET)
     public void iterator(){
         List<Integer> list = Arrays.asList(1,2,3,4);
-        for(int i=0;i<list.size();i++){
-            System.out.println(list.get(i));
-        }
-        for(Integer i : list){
-            System.out.println(i);
-        }
+        AtomicInteger count = new AtomicInteger(0);
         list.forEach(i -> {
             System.out.println(i);
+            count.updateAndGet(v -> v+3);
         });
+        count.get();
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("keyA", "valueA");
-        map.put("keyB", "valueB");
-        for (Map.Entry<String, Object> entry : map.entrySet()) { //Map.Entry是一种键值对的类型
-            System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
-        }
-        //map的forEach...
+
     }
 
     /**
@@ -76,9 +68,11 @@ public class Java8Controller {
     @RequestMapping(value = "/stream", method = RequestMethod.GET)
     public void stream(){
         List<Integer> list = Arrays.asList(2,1,3);
+        Stream<Integer> s = list.stream();
         list.forEach(a -> a=2);
         list.stream().forEach(System.out::println);
         Stream<Integer> ss = list.stream();
+
     }
 
     /**
@@ -87,11 +81,15 @@ public class Java8Controller {
     @RequestMapping(value = "/parallelStream", method = RequestMethod.GET)
     public void parallelStream(){
         List<Integer> list = Arrays.asList(1,2,3,4,5,6);
-        List<Integer> result = new ArrayList<>();
-        list.parallelStream().forEach(result::add);
-        result.forEach(System.out::println);
+        List<Integer> resultList = list.parallelStream().map(a ->a).collect(Collectors.toList());
+        resultList.forEach(System.out::println);
+
+//        List<Integer> result = new ArrayList<>();
+//        list.parallelStream().forEach(result::add);
+//        result.forEach(System.out::println);
         System.out.println("------------");
         //同步的方法
+
 
     }
 
@@ -101,15 +99,16 @@ public class Java8Controller {
     @RequestMapping(value = "/distinct", method = RequestMethod.GET)
     public void distinct(){
         List<Integer> list = Arrays.asList(2,1,3,2);
-        list.stream().distinct();
+        Set<Integer> se = new HashSet<>(list);
+        list = list.stream().distinct().collect(Collectors.toList());
         list.stream().forEach(System.out::println);
-        SellerDO sellerDO1 = new SellerDO(new Long(1), new String("小王"), new Integer(20), new BigDecimal(1000));
-        SellerDO sellerDO2 = new SellerDO(new Long(1), new String("小王"), new Integer(20), new BigDecimal("1000"));
-        List<SellerDO> sellerList = new ArrayList<>();
-        sellerList.add(sellerDO1);
-        sellerList.add(sellerDO2);
-        sellerList = sellerList.stream().distinct().collect(Collectors.toList());
-        sellerList.forEach(seller -> System.out.println(seller.toString()));
+//        SellerDO sellerDO1 = new SellerDO(new Long(1), new String("小王"), new Integer(20), new BigDecimal(1000));
+//        SellerDO sellerDO2 = new SellerDO(new Long(1), new String("小王"), new Integer(20), new BigDecimal("1000"));
+//        List<SellerDO> sellerList = new ArrayList<>();
+//        sellerList.add(sellerDO1);
+//        sellerList.add(sellerDO2);
+//        sellerList = sellerList.stream().distinct().collect(Collectors.toList());
+//        sellerList.forEach(seller -> System.out.println(seller.toString()));
     }
 
     /**
@@ -117,7 +116,11 @@ public class Java8Controller {
      */
     @RequestMapping(value = "/sum", method = RequestMethod.GET)
     public void sum(){
-        //面积求和
+        //面积求和orElse
+
+
+
+
 
         //导购业绩求和
         List<SellerDO> sellerList = shopList.stream().flatMap(shopDO -> shopDO.getSellerList().stream()).collect(Collectors.toList());
@@ -135,7 +138,9 @@ public class Java8Controller {
         shopList.forEach(shopDO -> {
             shopIds.add(shopDO.getId());
         });
+        List<ShopDO> result = new ArrayList<>();
         //map版
+        List<Long> newShopIds = shopList.stream().filter(shopDO -> shopDO != null && shopDO.getId() != null).map(shopDO -> shopDO.getId()).collect(Collectors.toList());
 
         //取出所有导购id，放入List<Long>
         List<Long> sellerIds = new ArrayList<>();
@@ -145,9 +150,12 @@ public class Java8Controller {
             });
         });
         //flatMap版
+        List<Long> sellerIdsNew = shopList.stream()
+                .flatMap(shopDO -> shopDO.getSellerList().stream())
+                .map(sellerDO -> sellerDO.getId()).collect(Collectors.toList());
 
 //        shopIdsNew.forEach(System.out::println);
-//        sellerIdsNew.forEach(System.out::println);
+        sellerIdsNew.forEach(System.out::println);
     }
 
     /**
@@ -155,11 +163,9 @@ public class Java8Controller {
      */
     @RequestMapping(value = "/filter", method = RequestMethod.GET)
     public void filter(){
-        //过滤面积大于100的店铺
-
-        //面积大于100的店铺数
-
-        //并行过滤(filter里面写多行)
+        List<Integer> list = Arrays.asList(1,2,3);
+        list.forEach(i -> i=2);
+        list.forEach(System.out::println);
 
     }
 
@@ -170,8 +176,12 @@ public class Java8Controller {
     public void group(){
         List<SellerDO> sellerList = shopList.stream().flatMap(shopDO -> shopDO.getSellerList().stream()).collect(Collectors.toList());
         //分块(大于20岁的一组)
-
+        Map<Boolean, List<SellerDO>> tmap = sellerList.stream().collect(Collectors.partitioningBy(sellerDO -> sellerDO.getAge() > 20));
+        tmap.forEach((k,v) -> {
+            System.out.println("key：" + k + ",values：" + v);
+        });
         //分组(按年龄分组)
+        Map<Integer, List<SellerDO>> gmap = sellerList.stream().collect(Collectors.groupingBy(sellerDO -> sellerDO.getAge()));
 
         //分组计数
         Map<Object,Long> map = sellerList.stream().collect(Collectors.groupingBy(SellerDO::getAge,Collectors.counting()));
@@ -188,6 +198,9 @@ public class Java8Controller {
         //导购按年龄升序排列
         List<SellerDO> sellerList = shopList.stream().flatMap(shopDO -> shopDO.getSellerList().stream()).collect(Collectors.toList());
         //list排序(用-号的局限：返回值必须int，改用Comparator.comparing(SellerDO::getAmount))
+        SellerDO sellerDO = sellerList.stream().min(Comparator.comparing(SellerDO::getAmount)).orElse(null);
+//        sellerList.forEach(sellerDO -> System.out.println(sellerDO.toString()));
+
 
         //流排序
 
@@ -210,6 +223,7 @@ public class Java8Controller {
     public void remove(){
         List<SellerDO> sellerList = shopList.stream().flatMap(shopDO -> shopDO.getSellerList().stream()).collect(Collectors.toList());
         List<Long> needSellerIds = Arrays.asList(1L,2L,3L);
+        sellerList.removeIf(sellerDO -> needSellerIds.contains(sellerDO.getId()));
 
 
     }
@@ -222,6 +236,10 @@ public class Java8Controller {
         //导购id为key,导购DO为value，并用peek给年龄大于20的乘10
         List<SellerDO> sellerList = shopList.stream().flatMap(shopDO -> shopDO.getSellerList().stream()).collect(Collectors.toList());
 
+        Map<Long, SellerDO> map = sellerList.stream().collect(Collectors.toMap(sellerDO -> sellerDO.getId(), sellerDO -> sellerDO));
+        map.forEach((k,v) -> {
+            System.out.println("k:"+k+",v:"+v);
+        });
     }
 
     /**
@@ -230,7 +248,9 @@ public class Java8Controller {
     @RequestMapping(value = "/link/to/string", method = RequestMethod.GET)
     public void linkToString(){
         //将店铺名称用","连接成字符串
-
+        List<String> list = Arrays.asList("a","b","c");
+        String result = list.stream().collect(Collectors.joining(",","[","}"));
+System.out.println(result);
     }
 
     /**
@@ -241,6 +261,7 @@ public class Java8Controller {
         //获取id是1的店铺，4的店铺
         Map<Long, ShopDO> shopMap = new HashMap<>();
         shopMap = shopList.stream().collect(Collectors.toMap(shopDO -> shopDO.getId(), shopDO -> shopDO));
+//        ShopDO shopDO = shopMap.computeIfPresent(1L,this::getByDB);
 
     }
 
