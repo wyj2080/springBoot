@@ -73,13 +73,6 @@
 			<scope>test</scope>
 		</dependency>
 
-<!--		&lt;!&ndash;kafka&ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>com.kiisoo.commons.component</groupId>-->
-<!--			<artifactId>kafka-client</artifactId>-->
-<!--			<version>1.0</version>-->
-<!--		</dependency>-->
-
 		<!--redis-->
 		<dependency>
 			<groupId>redis.clients</groupId>
@@ -149,6 +142,20 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5.12</version>
 		</dependency>
+
+		<!--切面-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>5.2.5.RELEASE</version>
+		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>org.aspectj</groupId>-->
+<!--			<artifactId>aspectjrt</artifactId>-->
+<!--			<version>1.9.5</version>-->
+<!--		</dependency>-->
+
 
 
 	</dependencies>
