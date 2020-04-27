@@ -6,6 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -202,7 +208,9 @@ public class Java8Controller {
 //        sellerList.forEach(sellerDO -> System.out.println(sellerDO.toString()));
 
 
-        //流排序
+        //流排序，按业绩降序
+        sellerList = sellerList.stream().sorted(Comparator.comparing(SellerDO::getAmount).reversed()).collect(Collectors.toList());
+
 
     }
 
@@ -273,15 +281,61 @@ System.out.println(result);
     }
 
     /**
-     * test
+     * date日期
      */
-    @RequestMapping(value = "/or", method = RequestMethod.GET)
+    @RequestMapping(value = "/date", method = RequestMethod.GET)
     public void or() {
-        Set<String> ss = new HashSet<>();
-        ss.add("大姐");
-        ss.add("小儿");
-        ss.add("啊");
-        ss.forEach(System.out::println);
-        ss.stream().forEach(a -> System.out.println(a));
+//        System.out.println(LocalDate.now());
+//        System.out.println(LocalTime.now());
+//        System.out.println(LocalDateTime.now());
+//
+//        LocalDate localDate = LocalDate.now();
+//        System.out.println(localDate.getYear() + "年" + localDate.getMonthValue() + "月" + localDate.getDayOfMonth() +"日");
+//        System.out.println("周" + localDate.getDayOfWeek().getValue());
+//        System.out.println(localDate.with(TemporalAdjusters.firstDayOfMonth()));
+//        System.out.println(localDate.with(TemporalAdjusters.lastDayOfMonth()));
+//        System.out.println(localDate.with(TemporalAdjusters.firstDayOfMonth()).plusDays(-1));
+//        System.out.println(LocalTime.parse("14:14:14"));
+        LocalDate localDateTmp = LocalDate.now();
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String nowDateStr = localDateTmp.format(df);
+        System.out.println(nowDateStr);
+
+        localDateTmp = localDateTmp.plusMonths(-1);
+        localDateTmp.plusWeeks(1);
+        String lastDateStr = localDateTmp.format(df);
+        System.out.println(lastDateStr);
+
+        List<Integer> list = Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13,14);
+        list.parallelStream().forEach(i -> {
+            Integer a = 2;
+            Integer flag = 1;
+            while (true){
+                if(a > 1000000000){
+                    flag = -1;
+                }
+                if(a < 0){
+                    flag = 1;
+                }
+                a += flag;
+            }
+        });
+
     }
+
+    /**
+     * 取交集
+     */
+    @RequestMapping(value = "/retain", method = RequestMethod.GET)
+    public void retain(){
+        List<Integer> list1 = new ArrayList<>();list1.add(1);list1.add(2);list1.add(3);
+        List<Integer> list2 = new ArrayList<>();list2.add(2);list2.add(3);list2.add(3);
+        List<Integer> list3 = new ArrayList<>();list3.add(2);list3.add(3);list3.add(3);
+        list1.retainAll(list3);
+        list2.retainAll(list3);
+        System.out.println(list1.toString());
+        System.out.println(list2.toString());
+        System.out.println(list3.toString());
+    }
+
 }
