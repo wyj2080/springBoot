@@ -14,7 +14,7 @@ import java.util.Map;
  * @Date: 2019/10/28
  * @Version: 1.0
  */
-@Controller
+//@Controller
 @RequestMapping("/link/kafka")
 public class LinkKafka {
     @Autowired

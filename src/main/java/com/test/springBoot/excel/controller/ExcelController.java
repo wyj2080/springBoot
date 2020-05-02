@@ -1,7 +1,7 @@
 package com.test.springBoot.excel.controller;
 
-import com.test.springBoot.link.entity.AccountDO;
-import com.test.springBoot.link.mapper.LinkDOMapper;
+import com.test.springBoot.mysql.entity.AccountDO;
+import com.test.springBoot.mysql.mapper.LinkDOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.ss.usermodel.Cell;

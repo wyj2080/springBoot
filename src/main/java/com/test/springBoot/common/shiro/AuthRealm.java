@@ -1,8 +1,8 @@
 package com.test.springBoot.common.shiro;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.test.springBoot.link.entity.AccountDO;
-import com.test.springBoot.link.mapper.LinkDOMapper;
+import com.test.springBoot.mysql.entity.AccountDO;
+import com.test.springBoot.mysql.mapper.LinkDOMapper;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;

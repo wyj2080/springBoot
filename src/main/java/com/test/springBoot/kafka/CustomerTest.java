@@ -16,7 +16,7 @@ import java.util.Properties;
  * @Date: 2019/10/28
  * @Version: 1.0
  */
-@Service
+//@Service
 public class CustomerTest {
     //连接参数
     private Properties properties;

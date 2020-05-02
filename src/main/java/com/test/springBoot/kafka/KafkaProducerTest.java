@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
 
-@Service
+//@Service
 public class KafkaProducerTest {
 
     //连接参数

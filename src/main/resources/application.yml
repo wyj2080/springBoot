@@ -4,12 +4,12 @@ mybatis:
 kafka:
   servers: 173.82.105.141:9092,173.82.238.114:9092
 
-kiisoo:
-  kafka:
-    servers: 173.82.105.141:9092,173.82.238.114:9092
-    producer:
-      key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+#kiisoo:
+#  kafka:
+#    servers: 173.82.105.141:9092,173.82.238.114:9092
+#    producer:
+#      key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer-class: org.apache.kafka.common.serialization.StringSerializer
 spring:
   datasource:
     url: jdbc:mysql://192.168.0.215:3306/p2p?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
