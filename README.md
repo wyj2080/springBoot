@@ -1,5 +1,5 @@
-# springBoot
-springBoot project to java test
+# SpringBoot
+SpringBoot project to java test
 用于学习的spring boot项目
 内容有：mysql连接(PageHelper)<br>
 kafka的使用<br>
