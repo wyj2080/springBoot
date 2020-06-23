@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description: java基础
@@ -91,18 +89,44 @@ public class JavaBaseController {
     @RequestMapping(value = "/json", method = RequestMethod.GET)
     public void json(){
         User user = new User();
-        Date s1 = new Date();
-        Date s2 = new Date();
-        System.out.println(user.age == 129);
+        String jsonStr = JSON.toJSONString(user);
+        System.out.println(jsonStr);
+        System.out.println(user.toString());
+        User userTmp = JSON.parseObject(jsonStr, User.class);
+        System.out.println(userTmp);
+
+        User user1 = new User();
+        User user2 = new User();
+        List<User> userList = Arrays.asList(user1, user2);
+        //userList转jsonArray
+        JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(userList));
+        System.out.println(jsonArray.toString());
+
+        //jsonArray转userList
+        List<User> userListTmp = JSON.parseArray(jsonArray.toJSONString(), User.class);
+        System.out.println(userListTmp.toString());
 
     }
 
-    @Data
-    class User{
-        Integer age;
-        User(){
-            age=129;
-        }
+    /**
+     * List集合
+     */
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public void list(){
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(30);
+        list.add(4);
+        list.add(5);
+        //最大值
+        int max = Collections.max(list);
+        //list倒置
+        Collections.reverse(list);
+        //截取，如果往list添加元素，再遍历newList会报错。!!因此不要用这个!!
+        List<Integer> newList = list.subList(2,4);
+        
+
     }
 
 
