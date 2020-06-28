@@ -1,8 +1,8 @@
 package com.test.springBoot.mybatisPlus;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.test.springBoot.mybatisPlus.entity.GoodsStock190407052437Test;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @Description:

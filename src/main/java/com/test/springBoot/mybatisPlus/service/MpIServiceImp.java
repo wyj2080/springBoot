@@ -1,8 +1,8 @@
-package com.test.springBoot.mybatisPlus;
+package com.test.springBoot.mybatisPlus.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.test.springBoot.mybatisPlus.mapper.MpDOMapper;
+import com.test.springBoot.mybatisPlus.entity.GoodsStock190407052437Test;
+import com.test.springBoot.mybatisPlus.MpIService;
 import com.test.springBoot.mybatisPlus.mapper.MpTestDOMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -15,6 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Service
 @EnableTransactionManagement(proxyTargetClass=true)//mybatis plus IService需要
-public class MpIServiceImp extends ServiceImpl<MpTestDOMapper, GoodsStock190407052437Test> implements MpIService{
+public class MpIServiceImp extends ServiceImpl<MpTestDOMapper, GoodsStock190407052437Test> implements MpIService {
 
 }

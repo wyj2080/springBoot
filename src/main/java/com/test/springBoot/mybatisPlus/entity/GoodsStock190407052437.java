@@ -1,4 +1,4 @@
-package com.test.springBoot.mybatisPlus;
+package com.test.springBoot.mybatisPlus.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -6,8 +6,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("goods_stock_190407052437_test")
-public class GoodsStock190407052437Test {
+@TableName("goods_stock_190407052437")
+public class GoodsStock190407052437 {
 
   private Long id;
   private Long skuId;

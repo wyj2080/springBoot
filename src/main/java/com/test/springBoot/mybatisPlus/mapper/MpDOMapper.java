@@ -1,7 +1,7 @@
 package com.test.springBoot.mybatisPlus.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.test.springBoot.mybatisPlus.GoodsStock190407052437;
+import com.test.springBoot.mybatisPlus.entity.GoodsStock190407052437;
 
 /**
  * @Description:

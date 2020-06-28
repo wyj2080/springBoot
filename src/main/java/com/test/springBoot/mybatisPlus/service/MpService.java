@@ -1,6 +1,8 @@
-package com.test.springBoot.mybatisPlus;
+package com.test.springBoot.mybatisPlus.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.test.springBoot.mybatisPlus.entity.GoodsStock190407052437;
+import com.test.springBoot.mybatisPlus.entity.GoodsStock190407052437Test;
 import com.test.springBoot.mybatisPlus.mapper.MpDOMapper;
 import com.test.springBoot.mybatisPlus.mapper.MpTestDOMapper;
 import org.apache.commons.beanutils.BeanUtils;
@@ -8,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.crypto.Data;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
