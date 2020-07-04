@@ -101,6 +101,13 @@
 			<version>0.11.0.0</version>
 		</dependency>
 
+		<!--RabbitMQ消息队列-->
+		<dependency>
+			<groupId>com.rabbitmq</groupId>
+			<artifactId>amqp-client</artifactId>
+			<version>5.9.0</version>
+		</dependency>
+
 		<!--BeanUtils对象操作-->
 		<dependency>
 			<groupId>commons-beanutils</groupId>

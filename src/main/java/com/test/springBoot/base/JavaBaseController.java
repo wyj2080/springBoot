@@ -88,23 +88,23 @@ public class JavaBaseController {
      */
     @RequestMapping(value = "/json", method = RequestMethod.GET)
     public void json(){
-        User user = new User();
-        String jsonStr = JSON.toJSONString(user);
-        System.out.println(jsonStr);
-        System.out.println(user.toString());
-        User userTmp = JSON.parseObject(jsonStr, User.class);
-        System.out.println(userTmp);
-
-        User user1 = new User();
-        User user2 = new User();
-        List<User> userList = Arrays.asList(user1, user2);
-        //userList转jsonArray
-        JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(userList));
-        System.out.println(jsonArray.toString());
-
-        //jsonArray转userList
-        List<User> userListTmp = JSON.parseArray(jsonArray.toJSONString(), User.class);
-        System.out.println(userListTmp.toString());
+//        User user = new User();
+//        String jsonStr = JSON.toJSONString(user);
+//        System.out.println(jsonStr);
+//        System.out.println(user.toString());
+//        User userTmp = JSON.parseObject(jsonStr, User.class);
+//        System.out.println(userTmp);
+//
+//        User user1 = new User();
+//        User user2 = new User();
+//        List<User> userList = Arrays.asList(user1, user2);
+//        //userList转jsonArray
+//        JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(userList));
+//        System.out.println(jsonArray.toString());
+//
+//        //jsonArray转userList
+//        List<User> userListTmp = JSON.parseArray(jsonArray.toJSONString(), User.class);
+//        System.out.println(userListTmp.toString());
 
     }
 
