@@ -1,12 +1,14 @@
 package com.test.springBoot.rabbitMQ.service;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.MessageProperties;
+import com.alibaba.fastjson.JSON;
+import com.rabbitmq.client.*;
+import com.test.springBoot.rabbitMQ.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,16 +46,43 @@ public class RabbitMQService {
         //创建通道
         Channel channel = connection.createChannel();
         //调用basicPublish循环发送10条消息 , 每条消息间隔1秒
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
+            User user = new User(new Long(i),"name"+i,i+18,"长沙福建信德巷108号3001-3004,"+i,"长山中学",new BigDecimal(""+i*1000),
+                    "项目经理",new Date(), new Date());
             channel.basicPublish(exchangeName, routingKey,
-                    MessageProperties.TEXT_PLAIN, ("测试消息" + i).getBytes());
-            TimeUnit.SECONDS.sleep(1);
+                    MessageProperties.TEXT_PLAIN, user.toString().getBytes());
+//            TimeUnit.SECONDS.sleep(1);
         }
         channel.close();
         connection.close();
     }
 
-    public void consumer(){
+    public void consumer() throws Exception{
+        //队列
+        String queueName = "rabbit_test";
+        //交换器
+        String exchangeName = "exchange.test.topic";
+        //路由键
+        String routingKey = "route.test";
+        //RabbitMQ服务端配置
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        connectionFactory.setHost(servers);
+        connectionFactory.setPort(port);
+        connectionFactory.setVirtualHost("/");
+        connectionFactory.setUsername(username);
+        connectionFactory.setPassword(password);
+        //连接
+        Connection connection = connectionFactory.newConnection();
+        //创建通道
+        Channel channel = connection.createChannel();
+        channel.exchangeDeclare(exchangeName, "topic", true, false, null);
+        channel.queueDeclare(queueName, true, false, false, null);
+        channel.queueBind(queueName, exchangeName, routingKey);
+        //5 设置channel，使用自定义消费者
+        channel.basicConsume(queueName, true, new RabbitMQConsumer(channel));
+
+        channel.close();
+        connection.close();
 
     }
 

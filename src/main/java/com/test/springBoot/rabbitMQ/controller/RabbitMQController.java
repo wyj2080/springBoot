@@ -28,14 +28,22 @@ public class RabbitMQController {
      */
     @RequestMapping(value = "/producer", method = RequestMethod.GET)
     public void producer() throws Exception {
-        rabbitMQService.producer();
+        List<Integer> list = Arrays.asList(1,2,3,4,5,6,7,8);
+        list.parallelStream().forEach(pt -> {
+            try {
+                rabbitMQService.producer();
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
+        });
     }
 
     /**
      * 消费者
      */
     @RequestMapping(value = "/consumer", method = RequestMethod.GET)
-    public void consumer(){
+    public void consumer() throws Exception {
         rabbitMQService.consumer();
     }
 
