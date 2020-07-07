@@ -1,6 +1,8 @@
 package com.test.springBoot.rabbitMQ.controller;
 
 import com.test.springBoot.rabbitMQ.service.RabbitMQService;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +47,12 @@ public class RabbitMQController {
     @RequestMapping(value = "/consumer", method = RequestMethod.GET)
     public void consumer() throws Exception {
         rabbitMQService.consumer();
+    }
+
+    @RabbitHandler
+    @RabbitListener(queues = "rabbit_test")
+    public void consumerExistsQueue(String data) {
+        System.out.println("consumerExistsQueue: " + data);
     }
 
 }

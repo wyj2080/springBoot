@@ -20,14 +20,16 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RabbitMQService {
     /**服务器地址端口*/
-    @Value("${rabbitmq.servers}")
-    private String servers;
-    @Value("${rabbitmq.port}")
+    @Value("${spring.rabbitmq.host}")
+    private String host;
+    @Value("${spring.rabbitmq.port}")
     private Integer port;
-    @Value("${rabbitmq.username}")
+    @Value("${spring.rabbitmq.username}")
     private String username;
-    @Value("${rabbitmq.password}")
+    @Value("${spring.rabbitmq.password}")
     private String password;
+    @Value("${spring.rabbitmq.virtual-host}")
+    private String virtualHost;
 
     public void producer() throws Exception {
         //交换器
@@ -36,9 +38,9 @@ public class RabbitMQService {
         String routingKey = "route.test";
         //RabbitMQ服务端配置
         ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(servers);
+        connectionFactory.setHost(host);
         connectionFactory.setPort(port);
-        connectionFactory.setVirtualHost("/");
+        connectionFactory.setVirtualHost(virtualHost);
         connectionFactory.setUsername(username);
         connectionFactory.setPassword(password);
         //连接
@@ -46,7 +48,7 @@ public class RabbitMQService {
         //创建通道
         Channel channel = connection.createChannel();
         //调用basicPublish循环发送10条消息 , 每条消息间隔1秒
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10000; i++) {
             User user = new User(new Long(i),"name"+i,i+18,"长沙福建信德巷108号3001-3004,"+i,"长山中学",new BigDecimal(""+i*1000),
                     "项目经理",new Date(), new Date());
             channel.basicPublish(exchangeName, routingKey,
@@ -66,9 +68,9 @@ public class RabbitMQService {
         String routingKey = "route.test";
         //RabbitMQ服务端配置
         ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(servers);
+        connectionFactory.setHost(host);
         connectionFactory.setPort(port);
-        connectionFactory.setVirtualHost("/");
+        connectionFactory.setVirtualHost(virtualHost);
         connectionFactory.setUsername(username);
         connectionFactory.setPassword(password);
         //连接
