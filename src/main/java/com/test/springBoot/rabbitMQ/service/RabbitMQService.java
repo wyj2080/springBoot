@@ -48,7 +48,7 @@ public class RabbitMQService {
         //创建通道
         Channel channel = connection.createChannel();
         //调用basicPublish循环发送10条消息 , 每条消息间隔1秒
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1; i++) {
             User user = new User(new Long(i),"name"+i,i+18,"长沙福建信德巷108号3001-3004,"+i,"长山中学",new BigDecimal(""+i*1000),
                     "项目经理",new Date(), new Date());
             channel.basicPublish(exchangeName, routingKey,

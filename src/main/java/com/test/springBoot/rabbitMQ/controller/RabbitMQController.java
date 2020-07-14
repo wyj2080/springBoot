@@ -1,6 +1,9 @@
 package com.test.springBoot.rabbitMQ.controller;
 
+import com.rabbitmq.client.Channel;
 import com.test.springBoot.rabbitMQ.service.RabbitMQService;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,8 +55,13 @@ public class RabbitMQController {
 
     @RabbitHandler
     @RabbitListener(queues = "rabbit_test")
-    public void consumerExistsQueue(String data) {
-        System.out.println("consumerExistsQueue: " + data);
+    public void consumerExistsQueue(Message message, Channel channel) throws IOException {
+
+        System.out.println("consumerExistsQueue: " + message.toString());
+        MessageProperties properties = message.getMessageProperties();
+        long tag = properties.getDeliveryTag();
+        channel.basicAck(tag, false);// 消费确认
+        channel.basicNack(tag, false, true);//这个有问题
     }
 
 }

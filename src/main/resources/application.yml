@@ -20,10 +20,16 @@ spring:
   #如果用@RabbitListener，下面的变量名要完全对的上，而且放在spring里面
   rabbitmq:
     virtual-host: /
-    username: admin
-    password: rm123456
+    username: tu
+    password: tu
     port: 5672
     host: 39.99.247.252
+    publisher-confirms: true
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual  #手动确认
+        prefetch: 100
 
 redis:
   servers: 173.82.105.141:6379
