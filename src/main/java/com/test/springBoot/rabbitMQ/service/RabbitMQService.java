@@ -2,13 +2,18 @@ package com.test.springBoot.rabbitMQ.service;
 
 import com.alibaba.fastjson.JSON;
 import com.rabbitmq.client.*;
+import com.test.springBoot.order.entity.Order;
+import com.test.springBoot.order.service.OrderService;
 import com.test.springBoot.rabbitMQ.entity.User;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,6 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @Version: 1.0
  */
 @Service
+@Slf4j
 public class RabbitMQService {
     /**服务器地址端口*/
     @Value("${spring.rabbitmq.host}")
@@ -30,6 +36,9 @@ public class RabbitMQService {
     private String password;
     @Value("${spring.rabbitmq.virtual-host}")
     private String virtualHost;
+
+    @Autowired
+    private OrderService orderService;
 
     public void producer() throws Exception {
         //交换器
@@ -48,13 +57,15 @@ public class RabbitMQService {
         //创建通道
         Channel channel = connection.createChannel();
         //调用basicPublish循环发送10条消息 , 每条消息间隔1秒
-        for (int i = 0; i < 1; i++) {
-            User user = new User(new Long(i),"name"+i,i+18,"长沙福建信德巷108号3001-3004,"+i,"长山中学",new BigDecimal(""+i*1000),
-                    "项目经理",new Date(), new Date());
-            channel.basicPublish(exchangeName, routingKey,
-                    MessageProperties.TEXT_PLAIN, user.toString().getBytes());
-//            TimeUnit.SECONDS.sleep(1);
-        }
+        List<Order> orderList = orderService.producer();
+        orderList.forEach(order -> {
+            try {
+                channel.basicPublish(exchangeName, routingKey,
+                        MessageProperties.TEXT_PLAIN, order.toString().getBytes());
+            } catch (IOException e) {
+                log.error("发生订单到rabbitmq失败",e);
+            }
+        });
         channel.close();
         connection.close();
     }
