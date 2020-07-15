@@ -64,15 +64,12 @@ public class RabbitMQController {
 
     @RabbitListener(queues = "rabbit_test")
     public void consumerExistsQueue(Message message, Channel channel) throws IOException {
-
-        System.out.println("consumerExistsQueue: " + message.toString());
         MessageProperties properties = message.getMessageProperties();
         long tag = properties.getDeliveryTag();
         try {
-            System.out.println(new String (message.getBody()));
-//            Order order = JSON.parseObject(Arrays.toString(message.getBody()), Order.class);
-//            orderMapper.insert(order);
-//            channel.basicAck(tag, false);// 消费确认，这个没写，只会在启动的时候消费一次
+            Order order = JSON.parseObject(message.getBody(), Order.class);
+            orderMapper.insert(order);
+            channel.basicAck(tag, false);// 消费确认，这个没写，只会在启动的时候消费一次
         }catch (Exception e){
             log.error("插入数据库出错",e);
         }

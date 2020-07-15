@@ -61,7 +61,7 @@ public class RabbitMQService {
         orderList.forEach(order -> {
             try {
                 channel.basicPublish(exchangeName, routingKey,
-                        MessageProperties.TEXT_PLAIN, order.toString().getBytes());
+                        MessageProperties.TEXT_PLAIN, JSON.toJSONString(order).getBytes());
             } catch (IOException e) {
                 log.error("发生订单到rabbitmq失败",e);
             }
