@@ -4,6 +4,7 @@ package com.test.springBoot.order.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Data
 @TableName("mall_order")
 @AllArgsConstructor
+@NoArgsConstructor
 public class Order {
   private Long id;
   private Long orderNo;
