@@ -306,20 +306,13 @@ System.out.println(result);
         String lastDateStr = localDateTmp.format(df);
         System.out.println(lastDateStr);
 
-        List<Integer> list = Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13,14);
-        list.parallelStream().forEach(i -> {
-            Integer a = 2;
-            Integer flag = 1;
-            while (true){
-                if(a > 1000000000){
-                    flag = -1;
-                }
-                if(a < 0){
-                    flag = 1;
-                }
-                a += flag;
-            }
-        });
+        //时间比较
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime1 = LocalDateTime.parse("2020-07-18 10:00:00", dtf);
+        LocalDateTime localDateTime2 = LocalDateTime.parse("2020-07-19 10:00:00", dtf);
+        LocalDateTime localDateTime3 = LocalDateTime.parse("2020-07-17 10:00:00", dtf);
+        System.out.println(localDateTime1.isBefore(localDateTime2));
+        System.out.println(localDateTime1.isAfter(localDateTime3));
 
     }
 

@@ -1,6 +1,7 @@
 package com.test.springBoot.rabbitMQ.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.*;
 import com.test.springBoot.order.entity.Order;
 import com.test.springBoot.order.service.OrderService;
@@ -58,10 +59,10 @@ public class RabbitMQService {
         Channel channel = connection.createChannel();
         //调用basicPublish循环发送10条消息 , 每条消息间隔1秒
         List<Order> orderList = orderService.producer();
-        orderList.forEach(order -> {
+        orderList.parallelStream().forEach(order -> {
             try {
                 channel.basicPublish(exchangeName, routingKey,
-                        MessageProperties.TEXT_PLAIN, JSON.toJSONString(order).getBytes());
+                        MessageProperties.TEXT_PLAIN, JSONObject.toJSONString(order).getBytes());
             } catch (IOException e) {
                 log.error("发生订单到rabbitmq失败",e);
             }
@@ -70,33 +71,5 @@ public class RabbitMQService {
         connection.close();
     }
 
-    public void consumer() throws Exception{
-        //队列
-        String queueName = "rabbit_test";
-        //交换器
-        String exchangeName = "exchange.test.topic";
-        //路由键
-        String routingKey = "route.test";
-        //RabbitMQ服务端配置
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(host);
-        connectionFactory.setPort(port);
-        connectionFactory.setVirtualHost(virtualHost);
-        connectionFactory.setUsername(username);
-        connectionFactory.setPassword(password);
-        //连接
-        Connection connection = connectionFactory.newConnection();
-        //创建通道
-        Channel channel = connection.createChannel();
-        channel.exchangeDeclare(exchangeName, "topic", true, false, null);
-        channel.queueDeclare(queueName, true, false, false, null);
-        channel.queueBind(queueName, exchangeName, routingKey);
-        //5 设置channel，使用自定义消费者
-        channel.basicConsume(queueName, true, new RabbitMQConsumer(channel));
-
-        channel.close();
-        connection.close();
-
-    }
 
 }
