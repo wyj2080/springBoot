@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Description: RabbitMQ消息队列使用方法
@@ -29,26 +27,12 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping("/rabbitmq")
-public class RabbitMQController implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnCallback {
+public class RabbitMQController {
     /**
      * 这个类会自动读取配置信息里的服务器信息
      */
     @Autowired
     private RabbitTemplate rabbitTemplate;
-
-    @PostConstruct
-    public void init(){
-        //发送确认，初始化设置
-        rabbitTemplate.setConfirmCallback(this);            //指定 ConfirmCallback
-        rabbitTemplate.setReturnCallback(this);
-        //强制委托模式
-        rabbitTemplate.setMandatory(true);
-        for(int i=0;i<2000000;i++){
-            ids.add(new Long(i));
-        }
-    }
-
-    List<Long> ids = new ArrayList<>();
 
 
     /**
@@ -72,67 +56,34 @@ public class RabbitMQController implements RabbitTemplate.ConfirmCallback, Rabbi
     //消息发送确认，实现RabbitTemplate.ConfirmCallback
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     void test() throws Exception {
-        for (int i=0;i<2000000;i++){
+        for (int i=0;i<2;i++){
             Order order = new Order();
             order.setId(new Long(i));
             CorrelationData correlationData = new CorrelationData(order.getId().toString());
-            //这里可能会连接超时报错
             rabbitTemplate.convertAndSend("exchange.test.topic","route.test", (Object) JSON.toJSONString(order), correlationData);
         }
 
     }
 
-    //消息发送确认，实现RabbitTemplate.ConfirmCallback
-    @RequestMapping(value = "/alert", method = RequestMethod.GET)
-    void alert()  {
-        System.out.println(ids.toString());
 
-    }
 
-    /**
-     * 发送到exchange回调
-     */
-    @Override
-    public void confirm(CorrelationData correlationData, boolean ack, String curse) {
-//        System.out.println("标识id："+correlationData);
-        if(!ack){
-            //处理业务
-        }
-    }
-
-    /**
-     * exchange→queue失败才回调
-     */
-    @Override
-    public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
-        System.out.println(message);
-        System.out.println(replyCode);
-        System.out.println(replyText);
-        System.out.println(exchange);
-        System.out.println(routingKey);
-    }
-
-    @RabbitListener(queues = "rabbit_test")
-    public void ctest(Message message, Channel channel) throws IOException {
-        MessageProperties properties = message.getMessageProperties();
-        long tag = properties.getDeliveryTag();
-        //接收实体(Object改成发送的对象)
-        Order order = JSONObject.parseObject(message.getBody(), Order.class);
-        if(order.getId() % 300 == 0){
-            System.out.println(order.getId());
-        }
-        ids.remove(order.getId());
-        //设置未确认数窗口，这个频繁变动，会导致消息丢失。如果是自动确认，速度太快来不及消费会用到这个
+//    @RabbitListener(queues = "rabbit_test")
+//    public void ctest(Message message, Channel channel) throws IOException {
+//        MessageProperties properties = message.getMessageProperties();
+//        long tag = properties.getDeliveryTag();
+//        //接收实体(Object改成发送的对象)
+//        Order order = JSONObject.parseObject(message.getBody(), Order.class);
+//        System.out.println(order.getId());
+//        //设置未确认数窗口，这个频繁变动，会导致消息丢失。如果是自动确认，速度太快来不及消费会用到这个
 //        channel.basicQos(200);
-        channel.basicAck(tag, false);
 //        if(order.getId() != 4L){
 //            // 消费确认，这个没写，只会在启动的时候消费一次
 //            channel.basicAck(tag, false);
 //        }else{
 //            channel.basicNack(tag, false, false);
 //        }
-
-    }
+//
+//    }
 
 
 
