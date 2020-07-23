@@ -23,13 +23,13 @@ spring:
     username: tu
     password: tu
     port: 5672
-    host: 39.99.247.252
+    host: 149.248.6.175
     publisher-confirms: true
     publisher-returns: true
     listener:
       simple:
         acknowledge-mode: manual  #手动确认
-        prefetch: 100
+        #prefetch: 1
 
 redis:
   servers: 173.82.105.141:6379

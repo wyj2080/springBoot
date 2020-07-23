@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description: RabbitMQ消息队列使用方法
@@ -41,7 +43,12 @@ public class RabbitMQController implements RabbitTemplate.ConfirmCallback, Rabbi
         rabbitTemplate.setReturnCallback(this);
         //强制委托模式
         rabbitTemplate.setMandatory(true);
+        for(int i=0;i<2000000;i++){
+            ids.add(new Long(i));
+        }
     }
+
+    List<Long> ids = new ArrayList<>();
 
 
     /**
@@ -65,12 +72,20 @@ public class RabbitMQController implements RabbitTemplate.ConfirmCallback, Rabbi
     //消息发送确认，实现RabbitTemplate.ConfirmCallback
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     void test() throws Exception {
-        for (int i=0;i<2;i++){
+        for (int i=0;i<2000000;i++){
             Order order = new Order();
             order.setId(new Long(i));
             CorrelationData correlationData = new CorrelationData(order.getId().toString());
+            //这里可能会连接超时报错
             rabbitTemplate.convertAndSend("exchange.test.topic","route.test", (Object) JSON.toJSONString(order), correlationData);
         }
+
+    }
+
+    //消息发送确认，实现RabbitTemplate.ConfirmCallback
+    @RequestMapping(value = "/alert", method = RequestMethod.GET)
+    void alert()  {
+        System.out.println(ids.toString());
 
     }
 
@@ -79,7 +94,7 @@ public class RabbitMQController implements RabbitTemplate.ConfirmCallback, Rabbi
      */
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String curse) {
-        System.out.println("标识id："+correlationData);
+//        System.out.println("标识id："+correlationData);
         if(!ack){
             //处理业务
         }
@@ -103,15 +118,19 @@ public class RabbitMQController implements RabbitTemplate.ConfirmCallback, Rabbi
         long tag = properties.getDeliveryTag();
         //接收实体(Object改成发送的对象)
         Order order = JSONObject.parseObject(message.getBody(), Order.class);
-        System.out.println(order.getId());
-        //设置未确认数窗口，这个频繁变动，会导致消息丢失。如果是自动确认，速度太快来不及消费会用到这个
-        channel.basicQos(200);
-        if(order.getId() != 4L){
-            // 消费确认，这个没写，只会在启动的时候消费一次
-            channel.basicAck(tag, false);
-        }else{
-            channel.basicNack(tag, false, false);
+        if(order.getId() % 300 == 0){
+            System.out.println(order.getId());
         }
+        ids.remove(order.getId());
+        //设置未确认数窗口，这个频繁变动，会导致消息丢失。如果是自动确认，速度太快来不及消费会用到这个
+//        channel.basicQos(200);
+        channel.basicAck(tag, false);
+//        if(order.getId() != 4L){
+//            // 消费确认，这个没写，只会在启动的时候消费一次
+//            channel.basicAck(tag, false);
+//        }else{
+//            channel.basicNack(tag, false, false);
+//        }
 
     }
 
