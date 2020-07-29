@@ -53,37 +53,65 @@ public class RabbitMQController {
         rabbitTemplate.convertAndSend("exchange.test.topic","route.test", (Object) JSON.toJSONString("对象实体"), correlationData);
     }
 
+    /**
+     * 延时消息，队列里数量不变，但消费不到到期的
+     */
+    @RequestMapping(value = "/delay", method = RequestMethod.GET)
+    void delay() throws Exception {
+        Order order = new Order();
+        order.setId(new Long(1));
+        CorrelationData correlationData = new CorrelationData(order.getId().toString());
+
+        MessageProperties messageProperties = new MessageProperties();
+        byte[] body = JSON.toJSONString(order).getBytes();
+        messageProperties.setContentType("json");
+        //设置消息的过期时间
+        messageProperties.setExpiration("5000");
+        Message message = new Message(body,messageProperties);
+
+        rabbitTemplate.convertAndSend("exchange.test.topic","route.test", message, correlationData);
+    }
+
     //消息发送确认，实现RabbitTemplate.ConfirmCallback
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     void test() throws Exception {
         for (int i=0;i<2;i++){
+
             Order order = new Order();
             order.setId(new Long(i));
             CorrelationData correlationData = new CorrelationData(order.getId().toString());
-            rabbitTemplate.convertAndSend("exchange.test.topic","route.test", (Object) JSON.toJSONString(order), correlationData);
+
+            MessageProperties messageProperties = new MessageProperties();
+            byte[] body = JSON.toJSONString(order).getBytes();
+            messageProperties.setContentType("json");
+            //设置消息的过期时间
+            messageProperties.setExpiration("5000");
+            Message message = new Message(body,messageProperties);
+
+            rabbitTemplate.convertAndSend("exchange.test.topic","route.test", message, correlationData);
         }
 
     }
 
 
 
-//    @RabbitListener(queues = "rabbit_test")
-//    public void ctest(Message message, Channel channel) throws IOException {
-//        MessageProperties properties = message.getMessageProperties();
-//        long tag = properties.getDeliveryTag();
-//        //接收实体(Object改成发送的对象)
-//        Order order = JSONObject.parseObject(message.getBody(), Order.class);
-//        System.out.println(order.getId());
-//        //设置未确认数窗口，这个频繁变动，会导致消息丢失。如果是自动确认，速度太快来不及消费会用到这个
-//        channel.basicQos(200);
-//        if(order.getId() != 4L){
-//            // 消费确认，这个没写，只会在启动的时候消费一次
-//            channel.basicAck(tag, false);
-//        }else{
-//            channel.basicNack(tag, false, false);
-//        }
-//
-//    }
+    @RabbitListener(queues = "rabbit_test")
+    public void ctest(Message message, Channel channel) throws IOException {
+        MessageProperties properties = message.getMessageProperties();
+        long tag = properties.getDeliveryTag();
+        //接收实体(Object改成发送的对象)
+        Order order = JSONObject.parseObject(message.getBody(), Order.class);
+        System.out.println(order.toString());
+        //设置未确认数窗口，这个频繁变动，会导致消息丢失。如果是自动确认，速度太快来不及消费会用到这个
+        channel.basicQos(200);
+        if(order.getId() != 4L){
+            // 消费确认，这个没写，只会在启动的时候消费一次
+            channel.basicAck(tag, false);
+        }else{
+            channel.basicNack(tag, false, false);
+        }
+
+    }
 
 
 

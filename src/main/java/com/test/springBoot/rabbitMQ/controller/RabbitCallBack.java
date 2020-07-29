@@ -22,7 +22,7 @@ public class RabbitCallBack implements RabbitTemplate.ConfirmCallback, RabbitTem
     @PostConstruct
     public void init(){
         //发送确认，初始化设置
-        rabbitTemplate.setConfirmCallback(this);            //指定 ConfirmCallback
+        rabbitTemplate.setConfirmCallback(this);
         rabbitTemplate.setReturnCallback(this);
         //强制委托模式
         rabbitTemplate.setMandatory(true);
