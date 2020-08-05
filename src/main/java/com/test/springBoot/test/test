@@ -1,0 +1,138 @@
+BEGIN
+	SET @uuid=i_uuid;
+	SET @storeId=i_storeId;
+	SET @beginDate=i_beginDate;
+	SET @endDate=i_endDate;
+/**店铺日库存明细表,
+查询店铺在选择时间段内每日库存变化情况
+1.从库存动态表插入店铺id,每日入库、出库、调入、调出、盘差、销售数据
+2.从库存表插入到期初日的当前库存字段,并根据当前到期初所有变化数据算出期初库存
+3.根据当日库存变化情况算出当日期初库存
+4.第二天期初库存=前一天期末库存
+5.3、4循环直到算完最后一天
+'a','9706ce71fef911e6b65900163e12c045','2017-04-01','2017-04-30'**/
+
+-- 1.从库存动态表插入数据
+	insert into scrmbasic_l_stockdaydetail(
+	id,orderNum,uuid,stockDate,storeId,
+	nowNum,nowNumTag,nowNumCost,beginNum,beginNumTag,beginNumCost,beginNum_temp,beginNum_tempCost,beginNum_tempTag,
+	stockinNum,stockinNumTag,stockinNumCost,stockoutNum,stockoutNumTag,stockoutNumCost,
+	shipperoutNum,shipperoutNumTag,shipperoutNumCost,shipperinNum,shipperinNumTag,shipperinNumCost,
+	inventoryNum,inventoryNumTag,inventoryNumCost,saleNum,saleNumTag,saleNumCost,
+	endNum,endNumTag,endNumCost,o_num,o_numTag,o_numCost,typeNum,typeNumCost,typeNumTag)
+	select
+		UUID_SHORT(),(@orderNum := @orderNum + 1) as orderNum,uuid,stockDate,storeId,
+		nowNum,nowNumTag,nowNumCost,beginNum,beginNumTag,beginNumCost,beginNum_temp,beginNum_tempCost,beginNum_tempTag,
+		stockinNum,stockinNumTag,stockinNumCost,stockoutNum,stockoutNumTag,stockoutNumCost,
+		shipperoutNum,shipperoutNumTag,shipperoutNumCost,shipperinNum,shipperinNumTag,shipperinNumCost,
+		inventoryNum,inventoryNumTag,inventoryNumCost,saleNum,saleNumTag,saleNumCost,
+		endNum,endNumTag,endNumCost,o_num,o_numTag,o_numCost,typeNum,typeNumCost,typeNumTag
+	from
+			(SELECT
+				@uuid as uuid,
+				date_format(sourceDate,'%Y-%m-%d') as stockDate,
+				storeId,
+				0 as nowNum,
+				0 as nowNumTag,
+				0 as nowNumCost,
+				0 as beginNum,
+				0 as beginNumTag,
+				0 as beginNumCost,
+				0 as beginNum_temp,
+				0 as beginNum_tempCost,
+				0 as beginNum_tempTag,
+				sum(case when dynamicType = 1 then dynamicNum else 0 end ) as stockinNum,
+				sum(case when dynamicType = 1 then tag else 0 end ) as stockinNumTag,
+				sum(case when dynamicType = 1 then cost else 0 end ) as stockinNumCost,
+				sum(case when dynamicType = 2 then dynamicNum else 0 end ) as stockoutNum,
+				sum(case when dynamicType = 2 then tag else 0 end ) as stockoutNumTag,
+				sum(case when dynamicType = 2 then cost else 0 end ) as stockoutNumCost,
+				sum(case when dynamicType = 3 then dynamicNum else 0 end ) as shipperoutNum,
+				sum(case when dynamicType = 3 then tag else 0 end ) as shipperoutNumTag,
+				sum(case when dynamicType = 3 then cost else 0 end ) as shipperoutNumCost,
+				sum(case when dynamicType = 4 then dynamicNum else 0 end ) as shipperinNum,
+				sum(case when dynamicType = 4 then tag else 0 end ) as shipperinNumTag,
+				sum(case when dynamicType = 4 then cost else 0 end ) as shipperinNumCost,
+				sum(case when dynamicType = 5 then dynamicNum else 0 end ) as inventoryNum,
+				sum(case when dynamicType = 5 then tag else 0 end ) as inventoryNumTag,
+				sum(case when dynamicType = 5 then cost else 0 end ) as inventoryNumCost,
+				sum(case when dynamicType = 6 then dynamicNum else 0 end ) as saleNum,
+				sum(case when dynamicType = 6 then tag else 0 end ) as saleNumTag,
+				sum(case when dynamicType = 6 then cost else 0 end ) as saleNumCost,
+				0 as endNum,
+				0 as endNumTag,
+				0 as endNumCost,
+				0 as o_num,
+				0 as o_numTag,
+				0 as o_numCost,
+				sum(typeNum) as typeNum,
+				sum(type_cost) as typeNumCost,
+				sum(type_tag) as typeNumTag
+			FROM
+				scrmbasic_stockdynamic
+			where
+				storeId = @storeId
+			and sourceDate >= @beginDate
+			and sourceDate < @endDate
+			group by date_format(sourceDate,'%Y-%m-%d'),storeId)a,(SELECT @orderNum := 0)b;
+
+	#记录查询到的最小的日期
+	select @minStockDate := min(stockDate) from scrmbasic_l_stockdaydetail where uuid = @uuid;
+
+-- 2.期初日期的当前库存和期初库存 -------*a.s_num--------
+	update scrmbasic_l_stockdaydetail a,(
+  select a.storeId,sum(a.s_num) as nowNum,sum(a.s_num*b.tagprice) as nowNumTag,sum(a.s_num*b.costPrice) as nowNumCost
+	from scrmbasic_stock a left join scrmbasic_gm_style b on a.styleId = b.id
+	where a.storeId = @storeId
+	GROUP BY a.storeId)b
+	set a.nowNum = b.nowNum,a.nowNumTag = b.nowNumTag,a.nowNumCost=b.nowNumCost
+	where a.uuid = @uuid and a.storeId = b.storeId and a.stockDate = @minStockDate;
+
+
+	# 更新期初到当前动态变化数据
+	update scrmbasic_l_stockdaydetail a,(
+	select storeId,sum(typeNum) as beginNum_temp,sum(type_tag) as beginNum_tempTag,sum(type_cost) as beginNum_tempCost from scrmbasic_stockdynamic
+	where sourceDate >= @beginDate and storeId = @storeId
+	group by storeId) b
+	set a.beginNum_temp = b.beginNum_temp,a.beginNum_tempCost = b.beginNum_tempCost,a.beginNum_tempTag = b.beginNum_tempTag
+	where a.uuid = @uuid and a.storeId = b.storeId and a.stockDate = @minStockDate;
+
+-- 3.计算店铺期初日期的期初数据
+	update scrmbasic_l_stockdaydetail
+	set beginNum = nowNum - beginNum_temp,
+			beginNumCost = nowNumCost - beginNum_tempCost,
+			beginNumTag = nowNumTag - beginNum_tempTag
+	where uuid = @uuid and storeId = @storeId and stockDate = @minStockDate;
+
+-- 4.循环计算期初期末
+	select @maxOrder := max(orderNum) from scrmbasic_l_stockdaydetail  where uuid = @uuid;
+	begin
+		declare i int;
+		set i = 1;
+		while i <= @maxOrder do
+			if @maxOrder > i then
+				update scrmbasic_l_stockdaydetail
+				set endNum = beginNum + typeNum,
+						endNumCost = beginNumCost+typeNumCost,
+						endNumTag = beginNumTag+typeNumTag
+				where uuid = @uuid and storeId = @storeId and orderNum = i;
+				update scrmbasic_l_stockdaydetail a,(
+				select endNum,endNumCost,endNumTag from scrmbasic_l_stockdaydetail where storeId = @storeId and orderNum = i) b
+				set a.beginNum = b.endNum,a.beginNumCost=b.endNumCost,a.beginNumTag=b.endNumTag
+				where uuid = @uuid and storeId = @storeId and orderNum = i+1;
+			else
+				update scrmbasic_l_stockdaydetail
+				set endNum = beginNum + typeNum,
+						endNumCost = beginNumCost + typeNumCost,
+						endNumTag = beginNumTag+typeNumTag
+				where uuid = @uuid and storeId = @storeId and orderNum = i;
+			end if;
+		set i = i +1;
+		end while;
+	end;
+	#更新店铺名称
+	update scrmbasic_l_stockdaydetail a,(
+	select id,name from scrmbasic_store)b
+	set a.storeName = b.name
+	where a.uuid = @uuid and a.storeId = b.id;
+END
