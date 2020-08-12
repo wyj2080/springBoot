@@ -168,6 +168,13 @@
 <!--			<version>1.9.5</version>-->
 <!--		</dependency>-->
 
+		<!-- easyExcel -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>easyexcel</artifactId>
+			<version>2.2.6</version>
+		</dependency>
+
 
 
 	</dependencies>
