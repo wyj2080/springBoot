@@ -37,9 +37,11 @@ public class EasyExcelService {
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
         List<ExcelUser> list = new ArrayList<>();
-        ExcelUser u = new ExcelUser("aaa",18);
+        ExcelUser u = new ExcelUser("aaa",18,"aa");
+        ExcelUser u2 = new ExcelUser("bbb",17,"cc");
         list.add(u);
-        EasyExcel.write(fileName).sheet().doWrite(list);
+        list.add(u2);
+        EasyExcel.write(fileName, ExcelUser.class).sheet().doWrite(list);
 
     }
 }
