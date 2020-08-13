@@ -88,11 +88,11 @@
 		</dependency>
 
 		<!--XSSFWorkbook-->
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>3.13</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.apache.poi</groupId>-->
+<!--			<artifactId>poi-ooxml</artifactId>-->
+<!--			<version>3.13</version>-->
+<!--		</dependency>-->
 
 		<!--kafka-->
 		<dependency>
@@ -168,7 +168,7 @@
 <!--			<version>1.9.5</version>-->
 <!--		</dependency>-->
 
-		<!-- easyExcel -->
+		<!-- easyExcel(与org.apache.poi有冲突) -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>easyexcel</artifactId>
