@@ -14,3 +14,5 @@ Java8编程<br>
 事务注解@Transactional<br>
 AOP面向切面编程<br>
 RabbitMQ消息队列的使用<br>
+easyexcel的使用<br>
+minio的使用<br>

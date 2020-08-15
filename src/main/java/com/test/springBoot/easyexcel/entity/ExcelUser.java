@@ -1,5 +1,6 @@
 package com.test.springBoot.easyexcel.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,4 +20,7 @@ public class ExcelUser {
 
     @ExcelProperty(value = "年龄", index = 1)
     private Integer age;
+
+    @ExcelIgnore
+    private String hl;
 }
