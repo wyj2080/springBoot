@@ -22,7 +22,7 @@ public class EasyExcelController {
     }
 
     @RequestMapping(value = "/write", method = RequestMethod.GET)
-    public void write(){
+    public void write() throws Exception {
         easyExcelService.simpleWrite();
     }
 }
