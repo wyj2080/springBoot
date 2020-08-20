@@ -28,9 +28,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/minio")
 public class MinioController {
-    String endPoint = "http://39.101.180.162:9000";
-    String accessKey = "admin";
-    String secretKey = "mn123456";
+    String endPoint = "http://ip:9000";
+    String accessKey = "账号";
+    String secretKey = "密码";
 
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public void download(){
