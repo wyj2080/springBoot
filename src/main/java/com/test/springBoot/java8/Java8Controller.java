@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
@@ -313,6 +311,11 @@ System.out.println(result);
         LocalDateTime localDateTime3 = LocalDateTime.parse("2020-07-17 10:00:00", dtf);
         System.out.println(localDateTime1.isBefore(localDateTime2));
         System.out.println(localDateTime1.isAfter(localDateTime3));
+
+        //date转localDateTime
+        Instant instant = new Date().toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
 
     }
 
