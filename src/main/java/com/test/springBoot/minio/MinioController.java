@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.xmlpull.v1.XmlPullParserException;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
@@ -100,7 +103,31 @@ public class MinioController {
     public void obj() throws Exception {
         MinioClient minioClient = new MinioClient(endPoint, accessKey, secretKey);
         InputStream inputStream = minioClient.getObject("store", "vue.txt");
+        printInputStream(inputStream);
+        // 关闭流，此处为示例，流关闭最好放在finally块。
+        inputStream.close();
+        //检查对象存在，不存在会抛异常
+        minioClient.statObject("store", "vue.txt");
+        //直接下载到本地
+        minioClient.getObject("store", "vue.txt", "d://vue.txt");
+        //生成256位AES key。
+        KeyGenerator symKeyGenerator = KeyGenerator.getInstance("AES");
+        symKeyGenerator.init(256);
+        SecretKey symKey = symKeyGenerator.generateKey();
+        InputStream skeyStream = minioClient.getObject("store", "vue.txt", symKey);
+        printInputStream(skeyStream);
+    }
 
+    /**
+     * 打印流
+     */
+    public void printInputStream(InputStream inputStream) throws IOException {
+        // 读取输入流直到EOF并打印到控制台。
+        byte[] buf = new byte[16384];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buf, 0, buf.length)) >= 0) {
+            System.out.println(new String(buf, 0, bytesRead, StandardCharsets.UTF_8));
+        }
     }
 
 }
