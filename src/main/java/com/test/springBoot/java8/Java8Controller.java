@@ -1,11 +1,15 @@
 package com.test.springBoot.java8;
 
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -314,6 +318,12 @@ System.out.println(result);
         System.out.println(localDateTime1.isBefore(localDateTime2));
         System.out.println(localDateTime1.isAfter(localDateTime3));
 
+
+        //当前是月的第几天，本月总天数，月初
+        LocalDate now = LocalDate.now();
+        System.out.println(now.getDayOfMonth());
+        System.out.println(now.lengthOfMonth());
+        System.out.println(now.withDayOfMonth(1).toString());
     }
 
     /**
@@ -329,6 +339,21 @@ System.out.println(result);
         System.out.println(list1.toString());
         System.out.println(list2.toString());
         System.out.println(list3.toString());
+    }
+
+    /**
+     * 取交集
+     */
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public void test() throws InvocationTargetException, IllegalAccessException {
+//        String url = "http://192.168.0.100:9000/excel/target/%E4%BB%A3%E7%90%86%E5%95%86%E8%BF%9B%E8%B4%A7%E7%AE%A1%E7%90%86%E5%AF%BC%E5%87%BA1597370594934.xlsx";
+//        List<String> list = Arrays.asList(url.split("/"));
+//        list.forEach(t -> System.out.println(t));
+        Long a = 1785600000000L;
+        Date date = new Date(new Long(a.toString()));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(sdf.format(date));
+
     }
 
 }
