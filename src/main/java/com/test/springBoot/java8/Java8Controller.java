@@ -1,8 +1,6 @@
 package com.test.springBoot.java8;
 
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -325,11 +323,9 @@ System.out.println(result);
         System.out.println(now.withDayOfMonth(1).toString());
         System.out.println("间隔天数"+ChronoUnit.DAYS.between(now.withDayOfMonth(1), now));
 
-        //date转localDateTime
-        Instant instant = new Date().toInstant();
-        ZoneId zoneId = ZoneId.systemDefault();
-        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-
+        //date转localDateTime和localDate
+        LocalDateTime localDateTime = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDate localDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     /**
