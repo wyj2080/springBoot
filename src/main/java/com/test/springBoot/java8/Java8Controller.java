@@ -12,10 +12,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -324,6 +322,12 @@ System.out.println(result);
         System.out.println(now.getDayOfMonth());
         System.out.println(now.lengthOfMonth());
         System.out.println(now.withDayOfMonth(1).toString());
+
+        //date转localDateTime
+        Instant instant = new Date().toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+
     }
 
     /**
