@@ -326,6 +326,9 @@ System.out.println(result);
         //date转localDateTime和localDate
         LocalDateTime localDateTime = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDate localDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        //localDate转date
+        Date nowDate = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        System.out.println(nowDate.toString());
     }
 
     /**
