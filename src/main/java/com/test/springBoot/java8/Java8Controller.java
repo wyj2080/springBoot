@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -322,6 +323,7 @@ System.out.println(result);
         System.out.println(now.getDayOfMonth());
         System.out.println(now.lengthOfMonth());
         System.out.println(now.withDayOfMonth(1).toString());
+        System.out.println("间隔天数"+ChronoUnit.DAYS.between(now.withDayOfMonth(1), now));
 
         //date转localDateTime
         Instant instant = new Date().toInstant();
