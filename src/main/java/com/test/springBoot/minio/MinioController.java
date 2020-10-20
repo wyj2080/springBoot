@@ -8,6 +8,8 @@ import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import io.minio.messages.Upload;
 import io.minio.policy.PolicyType;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,8 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
@@ -35,10 +35,49 @@ import java.util.List;
 @Controller
 @RequestMapping("/minio")
 public class MinioController {
-    String endPoint = "http://ip:9000";
-    String accessKey = "账号";
-    String secretKey = "密码";
+    /**服务地址*/
+    @Value("${minio.endPoint}")
+    String endPoint;
+
+    /**账号*/
+    @Value("${minio.accessKey}")
+    String accessKey;
+
+    /**密码*/
+    @Value("${minio.secretKey}")
+    String secretKey;
+
+    /**minio客户端*/
     MinioClient minioClient;
+
+    /**
+     * 直接定义一个公共的key，应为putObject和getObject需要同一个key
+     */
+    SecretKey symKey = new SecretKey() {
+        @Override
+        public String getAlgorithm() {
+            return "AES";
+        }
+
+        @Override
+        public String getFormat() {
+            return "RAW";
+        }
+
+        /**
+         * SecretKey symKey = symKeyGenerator.generateKey();里的byte[] 有32个byte，一共256位
+         * @return
+         */
+        @Override
+        public byte[] getEncoded() {
+            Integer[] keyArr = {-3,75,60,11,-116,125,87,-86,-68,108,126,-32,-117,-83,40,27,102,-109,-100,70,-67,-123,96,-107,-61,8,41,-44,-119,-91,64,39};
+            byte[] result = {};
+            for(int i=0;i<keyArr.length;i++){
+                result = ArrayUtils.addAll(result, keyArr[i].byteValue());
+            }
+            return result;
+        }
+    };
 
     @PostConstruct
     public void init() throws Exception {
@@ -148,23 +187,44 @@ public class MinioController {
     }
 
     /**
-     * 加密对象
+     * 获取密钥
      */
-    @RequestMapping(value = "/secret", method = RequestMethod.GET)
-    public void secret() throws Exception {
-        //生成256位AES key.
+    @RequestMapping(value = "/key", method = RequestMethod.GET)
+    public void getKey() throws Exception {
+        //获取自己key的方式：生成256位AES key
         KeyGenerator symKeyGenerator = KeyGenerator.getInstance("AES");
         symKeyGenerator.init(256);
         SecretKey symKey = symKeyGenerator.generateKey();
+        String keyStr = "";
+        for (int i = 0; i < symKey.getEncoded().length; i++) {
+            keyStr+=symKey.getEncoded()[i]+",";
+        }
+        keyStr = keyStr.substring(0, keyStr.length() -1);
+        System.out.println(keyStr);
+    }
+
+    /**
+     * 加密对象
+     */
+    @RequestMapping(value = "/encode", method = RequestMethod.GET)
+    public void encode() throws Exception {
         //流上传成文件
         StringBuilder builder = new StringBuilder();
         builder.append("文字");
-        InputStream strStream = new ByteArrayInputStream(builder.toString().getBytes());
+        InputStream strStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
         minioClient.putObject("store", "test.txt",strStream, strStream.available(), "application/octet-stream", symKey);
+        strStream.close();
+    }
 
-        //生成256位AES key。(未成功)
-        InputStream skeyStream = minioClient.getObject("store", "vue.txt", symKey);
-        printInputStream(skeyStream);
+    /**
+     * 解密对象
+     */
+    @RequestMapping(value = "/decode", method = RequestMethod.GET)
+    public void decode() throws Exception {
+        //获取流
+        InputStream strStream = minioClient.getObject("store", "test.txt", symKey);
+        printInputStream(strStream);
+        strStream.close();
     }
 
 }
