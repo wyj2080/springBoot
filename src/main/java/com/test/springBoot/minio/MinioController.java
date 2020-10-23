@@ -3,24 +3,24 @@ package com.test.springBoot.minio;
 import io.minio.MinioClient;
 import io.minio.ObjectStat;
 import io.minio.Result;
-import io.minio.errors.*;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import io.minio.messages.Upload;
 import io.minio.policy.PolicyType;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.poi.util.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.xmlpull.v1.XmlPullParserException;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ import java.util.List;
  * @Date: 2020/8/13
  * @Version: 1.0
  */
-@Controller
+@RestController
 @RequestMapping("/minio")
 public class MinioController {
     /**服务地址*/
@@ -225,6 +225,71 @@ public class MinioController {
         InputStream strStream = minioClient.getObject("store", "test.txt", symKey);
         printInputStream(strStream);
         strStream.close();
+    }
+
+    /**
+     * 生成可下载的url
+     * 可以私有桶，无法解密，参数为失效秒数：30秒
+     */
+    @GetMapping("/get")
+    public void get() throws Exception{
+        String url = minioClient.presignedGetObject("test", "test.txt", 30);
+        System.out.println(url);
+    }
+
+    @GetMapping("/test")
+    public void test(HttpServletResponse response) throws Exception{
+        //列出已存在的桶，如果没有test，创建test桶，往里面写入文件
+        List<Bucket> bucketList = minioClient.listBuckets();
+        bucketList.forEach(t -> System.out.println(t.name()));
+        removeBucket("test");
+        minioClient.makeBucket("test");
+        //流上传成文件
+        StringBuilder builder = new StringBuilder();
+        builder.append("文字");
+        InputStream outStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
+        minioClient.putObject("test", "test.txt",outStream, outStream.available(), "application/octet-stream", symKey);
+        InputStream inStream = minioClient.getObject("test", "test.txt", symKey);
+        outStream.close();
+
+        //下载的文件携带这个名称
+        response.setHeader("Content-Disposition", "attachment;filename=" + "test.txt");
+        //文件下载类型--二进制文件
+        response.setContentType("application/octet-stream");
+
+        try {
+            ServletOutputStream sos = response.getOutputStream();
+            sos.write(IOUtils.toByteArray(inStream));
+            inStream.close();
+            sos.flush();
+            sos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    /**
+     * 删除桶
+     */
+    private void removeBucket(String bucketName) throws Exception{
+        if(!minioClient.bucketExists(bucketName)){
+            return;
+        }
+        //删除桶内文件
+        Iterable<Result<Item>> objectList = minioClient.listObjects(bucketName);
+        objectList.forEach(t -> {
+            try {
+                System.out.println("删除文件："+t.get().objectName());
+                minioClient.removeObject(bucketName, t.get().objectName());
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+        });
+        //删除桶
+        minioClient.removeBucket(bucketName);
+        System.out.println("删除桶："+bucketName);
     }
 
 }
