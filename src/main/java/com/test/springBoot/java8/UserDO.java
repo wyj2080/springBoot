@@ -2,6 +2,7 @@ package com.test.springBoot.java8;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  * @Version: 1.0
  */
 @Data
-public class UserDO {
+public class UserDO implements Serializable {
     //id
     Long id;
     //姓名
