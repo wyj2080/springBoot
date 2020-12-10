@@ -16,3 +16,4 @@ AOP面向切面编程<br>
 RabbitMQ消息队列的使用<br>
 easyexcel的使用<br>
 minio的使用<br>
+jetcache的使用<br>

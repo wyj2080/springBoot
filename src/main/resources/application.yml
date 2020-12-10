@@ -32,7 +32,33 @@ spring:
         #prefetch: 1
 
 redis:
-  servers: 173.82.105.141:6379
+  servers: ip:6379
+
+minio:
+  endPoint: http://ip:9000
+  accessKey: admin
+  secretKey: admin
+
+
+jetcache:
+  statIntervalMinutes: 15
+  areaInCacheName: false
+  local:
+    default:
+      type: linkedhashmap
+      keyConvertor: fastjson
+  remote:
+    default:
+      type: redis
+      keyConvertor: fastjson
+      valueEncoder: java
+      valueDecoder: java
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: ip
+      port: 6379
 
 
 
