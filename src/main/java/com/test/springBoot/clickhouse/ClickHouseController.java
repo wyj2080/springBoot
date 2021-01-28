@@ -2,6 +2,7 @@ package com.test.springBoot.clickhouse;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.test.springBoot.clickhouse.mapper.RequestLogMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/ch")
+@Slf4j
 public class ClickHouseController {
     @Autowired
     private RequestLogMapper requestLogMapper;
@@ -25,6 +27,12 @@ public class ClickHouseController {
      */
     @GetMapping("/test")
     public void test(){
+        log.info("清空表开始");
+        requestLogMapper.truncateTable();
+        log.info("清空表结束");
+        requestLogMapper.insertData();
+        log.info("插入表完成");
+        log.info(requestLogMapper.count()+"");
         LambdaQueryWrapper<RequestLog> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByDesc(RequestLog::getRequestTime);
         wrapper.last("limit 10");

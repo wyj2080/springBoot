@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test.springBoot.clickhouse.mapper.RequestLogMapper" >
+
+    <delete id="truncateTable">
+        TRUNCATE table ebi_request ;
+    </delete>
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from ebi_request
+    </select>
+
+    <insert id="insertData">
+        insert into ebi_request select * from request
+    </insert>
+
+</mapper>

@@ -11,4 +11,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RequestLogMapper extends BaseMapper<RequestLog> {
+void truncateTable();
+
+void insertData();
+
+Integer count();
+
 }
