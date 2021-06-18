@@ -64,13 +64,19 @@
 			<version>2.3.30</version>
 		</dependency>
 
-		<!-- api文档注释 -->
+		<!-- api文档注释 application里加@EnableOpenApi -->
+		<!--地址：http://localhost:8080/swagger-ui/index.html-->
 		<dependency>
 			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
+			<artifactId>springfox-boot-starter</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-
+		<!--springfox报plugin找不到，就引入这个-->
+		<dependency>
+			<groupId>org.springframework.plugin</groupId>
+			<artifactId>spring-plugin-core</artifactId>
+			<version>2.0.0.RELEASE</version>
+		</dependency>
 
 		<!--shiro-->
 		<dependency>
