@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.URI;
@@ -14,11 +15,15 @@ import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 
 /**
@@ -114,15 +119,26 @@ public class Java11Controller {
         //分割行
         String a = "aaa\n123";
         a.lines().forEach(System.out::println);
+        a.lines().count();
         //strip 去除空格：两边，左侧，右侧
         String b = "  aa bb  ";
         System.out.println(b.strip());
         System.out.println(b.stripLeading());
         System.out.println(b.stripTrailing());
         //--------------------collection
-        //list转arr
-        List<Integer> list = Arrays.asList(2,3,1);
+        //list与arr互相转换
+        List<Integer> list = Arrays.asList(2,3,1,null,4,0);
         Integer[] intArr = list.toArray(Integer[]::new);
+        //文件(需要本身utf-8编码，不然报错)，读、写、删文件
+        Path path = Paths.get("D://vue.txt");
+        Files.readString(path);
+        Path writePath = Paths.get("D://write.txt");
+        Files.writeString(writePath, "write thing");
+        Files.delete(writePath);
+
+        list = list.stream().filter((@NotNull var t) -> t>1).collect(Collectors.toList());
+        System.out.println(list.toString());
+
 
     }
 
