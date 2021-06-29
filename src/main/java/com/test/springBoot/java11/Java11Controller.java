@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.URI;
@@ -23,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 
 /**
@@ -120,8 +118,8 @@ public class Java11Controller {
         String a = "aaa\n123";
         a.lines().forEach(System.out::println);
         a.lines().count();
-        //strip 去除空格：两边，左侧，右侧
-        String b = "  aa bb  ";
+        //strip 去除空格(任何)：两边，左侧，右侧。trim只能半角空格
+        String b = "  aa bb        ";
         System.out.println(b.strip());
         System.out.println(b.stripLeading());
         System.out.println(b.stripTrailing());
@@ -136,7 +134,6 @@ public class Java11Controller {
         Files.writeString(writePath, "write thing");
         Files.delete(writePath);
 
-        list = list.stream().filter((@NotNull var t) -> t>1).collect(Collectors.toList());
         System.out.println(list.toString());
 
 
