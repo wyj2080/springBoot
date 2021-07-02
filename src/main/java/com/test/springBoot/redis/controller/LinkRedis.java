@@ -21,10 +21,14 @@ public class LinkRedis {
     @Value("${redis.servers}")
     private String servers;
 
+    @Value("${redis.password}")
+    private String password;
+
     @RequestMapping(value = "/send", method = RequestMethod.GET)
     public Map<String, Object> send() throws InterruptedException {
         //连接 Redis 服务
         Jedis jedis = new Jedis("192.168.0.100", 6379);
+        jedis.auth(password);
         System.out.println("连接成功");
         //查看服务是否运行
         System.out.println("服务正在运行: "+jedis.ping());
