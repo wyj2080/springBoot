@@ -7,6 +7,11 @@ import com.alicp.jetcache.anno.CreateCache;
 import com.test.springBoot.java8.UserDO;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @Description: jetcache
  * @Author: wangyinjia
@@ -35,8 +40,37 @@ public class JetCacheController {
         //取
         userCache.get(1001L);
         //删除
-//        userCache.remove(1001L);
+        userCache.remove(1002L);
         System.out.println(userCache.get(1001L).toString());
+
+        //不支持多级缓存
+//        userCache.putIfAbsent(userDO.getId(), userDO);
+        //批量操作
+        userCache.getAll(new HashSet<>());
+        userCache.putAll(new HashMap<>());
+        userCache.removeAll(new HashSet<>(Arrays.asList(1L)));
+    }
+
+    @RequestMapping(value = "/test2", method = RequestMethod.GET)
+    public void test2() throws Exception {
+        //jetCache特有api
+        userCache.computeIfAbsent(1001L, t -> {
+            System.out.println(t);
+            return userCache.get(1001L);
+        }, true, 100, TimeUnit.SECONDS);
+        //put单独设置时间
+        userCache.put(1002L, new UserDO(), 2, TimeUnit.SECONDS);
+        //
+        boolean hasRun = userCache.tryLockAndRun(1001L, 20, TimeUnit.SECONDS, () -> {
+            System.out.println("lock");
+        });
+        System.out.println(hasRun);
+
+    }
+
+    @RequestMapping(value = "/test3", method = RequestMethod.GET)
+    public void test3() throws Exception {
+        System.out.println(userCache.get(1001L));
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
