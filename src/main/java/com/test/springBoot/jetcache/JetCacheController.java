@@ -5,10 +5,7 @@ import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.Cached;
 import com.alicp.jetcache.anno.CreateCache;
 import com.test.springBoot.java8.UserDO;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Description: jetcache
@@ -19,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/jetcache")
 public class JetCacheController {
-    //DO类需要实现序列化
+    //DO类需要实现序列化，内部类也要
     // expire:过期时间
     // localLimit内存中的数量
     // cacheType默认远程
+    //不同类里名字相同，会共享
     @CreateCache(name = "JetCacheController.userCache", expire = 50, cacheType = CacheType.BOTH, localLimit = 50)
     private Cache<Long, UserDO> userCache;
 
@@ -46,10 +44,14 @@ public class JetCacheController {
         System.out.println(userCache.get(1001L).toString());
     }
 
+    /**
+     * 方法缓存：返回值缓存,null除外
+     */
     @RequestMapping(value = "/bean", method = RequestMethod.GET)
     @ResponseBody
     @Cached(name="JetCacheController.getBean", expire = 30)
-    public UserDO getBean() throws Exception {
+    public UserDO getBean(@RequestParam("ff") String ff) throws Exception {
+        System.out.println(ff);
         return userCache.get(1001L);
     }
 
