@@ -2,9 +2,11 @@ package com.test.springBoot.jetcache;
 
 import com.alicp.jetcache.Cache;
 import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.CacheUpdate;
 import com.alicp.jetcache.anno.Cached;
 import com.alicp.jetcache.anno.CreateCache;
 import com.test.springBoot.java8.UserDO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -28,6 +30,8 @@ public class JetCacheController {
     //不同类里名字相同，会共享
     @CreateCache(name = "JetCacheController.userCache", expire = 50, cacheType = CacheType.BOTH, localLimit = 50)
     private Cache<Long, UserDO> userCache;
+    @Autowired
+    private JetCacheService jetCacheService;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public void test() throws Exception {
@@ -60,7 +64,7 @@ public class JetCacheController {
         }, true, 100, TimeUnit.SECONDS);
         //put单独设置时间
         userCache.put(1002L, new UserDO(), 2, TimeUnit.SECONDS);
-        //
+        //未成功
         boolean hasRun = userCache.tryLockAndRun(1001L, 20, TimeUnit.SECONDS, () -> {
             System.out.println("lock");
         });
@@ -88,6 +92,35 @@ public class JetCacheController {
         System.out.println(ff);
         return userCache.get(1001L);
     }
+
+    /**
+     * 更新缓存(未成功)
+     */
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    @ResponseBody
+    public UserDO updateBean() throws Exception {
+        UserDO userDO = new UserDO();
+        userDO.setId(1001L);
+        userDO.setName("新名词");
+        updateCache(userDO);
+        return userCache.get(1001L);
+    }
+
+    @CacheUpdate(name="JetCacheController.getBean", key="#userDO.id", value = "#userDO")
+    public void updateCache(UserDO userDO)  {
+    }
+
+    /**
+     * 异步put ,removeAll
+     * get因为有返回值所以还是会阻塞
+     */
+    @RequestMapping(value = "/async/put", method = RequestMethod.GET)
+    @ResponseBody
+    public void asyncPut() throws Exception {
+        jetCacheService.async();
+        System.out.println("down");
+    }
+
 
 
 }
