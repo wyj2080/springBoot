@@ -8,14 +8,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.scheduling.annotation.EnableAsync;
-import springfox.documentation.oas.annotations.EnableOpenApi;
 
 @SpringBootApplication
 @MapperScan({"com.test.springBoot.*.mapper"})
 //jetCache
 @EnableMethodCache(basePackages = "com.test.springBoot")
 @EnableCreateCacheAnnotation
-@EnableOpenApi
 //异步注解
 @EnableAsync
 public class Application extends SpringBootServletInitializer {
