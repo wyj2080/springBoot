@@ -24,7 +24,6 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("shop")
-@ApiModel(value="Shop对象", description="")
 public class Shop extends Model<Shop> {
 
     private static final long serialVersionUID = 1L;
