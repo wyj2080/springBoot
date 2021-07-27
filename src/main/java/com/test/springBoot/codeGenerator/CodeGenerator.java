@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  * mybatis代码生成
+ * 只能用java8，java11会报错
  */
 public class CodeGenerator {
     /** 作者 */
@@ -53,8 +54,8 @@ public class CodeGenerator {
 
     // 数据库
     private static String username = "root";
-    private static String password = "ci071826";
-    private static String url = "jdbc:mysql://39.101.180.162:3306/p2p?serverTimezone=GMT%2B8&characterEncoding=UTF-8&allowMultiQueries=true";
+    private static String password = "mima";
+    private static String url = "jdbc:mysql://ip:3306/p2p?serverTimezone=GMT%2B8&characterEncoding=UTF-8&allowMultiQueries=true";
     private static DbType DB_TYPE = DbType.MYSQL;
     private static String driverClassName = "com.mysql.cj.jdbc.Driver";
 
