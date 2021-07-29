@@ -1,8 +1,6 @@
 package com.test.springBoot.mybatisPlus.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -23,7 +22,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("mybatis_plus")
+@TableName(value = "mybatis_plus")
 @ApiModel(value="MybatisPlus对象", description="")
 public class MybatisPlus extends Model<MybatisPlus> {
 
@@ -41,8 +40,16 @@ public class MybatisPlus extends Model<MybatisPlus> {
     @TableField("age")
     private Integer age;
 
+    private Integer num;
+
+    private BigDecimal amount;
+
+
+    /**
+     * 自动解析，上面tableName里加autoResultMap
+     * TableField里typeHandler = FastjsonTypeHandler.class
+     */
     @ApiModelProperty(value = "配置")
-    @TableField("config")
     private String config;
 
     @TableField("create_time")
@@ -50,5 +57,11 @@ public class MybatisPlus extends Model<MybatisPlus> {
 
     @TableField("update_time")
     private LocalDateTime updateTime;
+
+    @TableLogic(value = "0", delval = "1")
+    private Integer deleted;
+
+    @Version
+    private Integer version;
 
 }
