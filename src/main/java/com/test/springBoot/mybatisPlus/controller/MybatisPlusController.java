@@ -3,6 +3,7 @@ package com.test.springBoot.mybatisPlus.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.test.springBoot.mybatisPlus.entity.MybatisPlus;
 import com.test.springBoot.mybatisPlus.entity.MybatisPlusDTO;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,9 +62,11 @@ public class MybatisPlusController {
 
     @GetMapping("/test")
     public List<MybatisPlus> test(){
-        LambdaQueryWrapper<MybatisPlus> wrapper = new LambdaQueryWrapper<>();
-        wrapper.notBetween(MybatisPlus::getAge, 18, 30);
-        return mybatisPlusService.list(wrapper);
+        new UpdateWrapper().lambda().set("name", null);
+        return null;
+//        LambdaQueryWrapper<MybatisPlus> wrapper = new LambdaQueryWrapper<>();
+//        wrapper.notBetween(MybatisPlus::getAge, 18, 30);
+//        return mybatisPlusService.list(wrapper);
     }
 
     /**
@@ -134,7 +138,21 @@ public class MybatisPlusController {
         wrapper.between(MybatisPlus::getAge, 18, 20);
         wrapper.notBetween(MybatisPlus::getAge, 18, 20);
         wrapper.like(MybatisPlus::getName, "阿姨");
+        wrapper.and(t -> t.like(MybatisPlus::getName, "阿姨").or().like(MybatisPlus::getAge, 20));
         wrapper.notLike(MybatisPlus::getName, "阿姨");
+        wrapper.isNull(MybatisPlus::getAge);
+        wrapper.isNotNull(MybatisPlus::getAge);
+        wrapper.in(MybatisPlus::getAge, Arrays.asList(1,10,100));
+        wrapper.notIn(MybatisPlus::getAge, new ArrayList<>());
+        wrapper.inSql(MybatisPlus::getId, "select id from ...");
+        wrapper.groupBy(MybatisPlus::getAge,MybatisPlus::getAmount);
+        wrapper.orderBy(true, false, MybatisPlus::getAmount, MybatisPlus::getAge);
+        wrapper.orderByAsc(MybatisPlus::getName).orderByDesc(MybatisPlus::getAge);
+        wrapper.having("sum(age) > 10");
+        wrapper.last("limit 10");
+
+        wrapper.select(MybatisPlus::getId, MybatisPlus::getAge);
+
     }
 
 }

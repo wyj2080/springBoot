@@ -1,7 +1,7 @@
 package com.test.springBoot.mybatisPlus.service;
 
-import com.test.springBoot.mybatisPlus.entity.MybatisPlus;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.test.springBoot.mybatisPlus.entity.MybatisPlus;
 
 /**
  * <p>
@@ -12,5 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-07-27
  */
 public interface IMybatisPlusService extends IService<MybatisPlus> {
+
+
 
 }

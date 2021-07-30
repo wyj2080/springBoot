@@ -17,4 +17,8 @@
         id, name, age, config, create_time, update_time
     </sql>
 
+    <select id="findPage" resultType="com.test.springBoot.mybatisPlus.entity.MybatisPlus">
+        select * from mybatis_plus
+    </select>
+
 </mapper>
