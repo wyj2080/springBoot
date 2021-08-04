@@ -1,8 +1,7 @@
 package com.test.springBoot.mysql.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.test.springBoot.mysql.entity.AccountDO;
 import com.test.springBoot.mysql.mapper.LinkDOMapper;
 import org.apache.shiro.SecurityUtils;
@@ -15,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description:
@@ -48,10 +47,8 @@ public class LinkMySql{
         //物理分页，需引入maven
         QueryWrapper<AccountDO> wrapper = new QueryWrapper<>();
         wrapper.eq("id",5523);
-        PageHelper.startPage(pageNum,pageSize);
         Page<AccountDO> list = (Page<AccountDO>)linkDOMapper.selectList(wrapper);
         System.out.println(list.getPages());
-        list.forEach(listDO -> System.out.println(listDO.toString()));
         return result;
     }
 

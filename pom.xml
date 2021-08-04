@@ -37,17 +37,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>2.1.0</version>
-		</dependency>
 
 		<!--mybatis-plus-->
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-boot-starter</artifactId>
-			<version>3.4.2</version>
+			<version>3.4.3</version>
 		</dependency>
 
 		<!--mybatis-plus代码生成器-->
@@ -113,13 +108,6 @@
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<version>3.1.0</version>
-		</dependency>
-
-		<!--PageHelper(spring boot)分页插件-->
-		<dependency>
-			<groupId>com.github.pagehelper</groupId>
-			<artifactId>pagehelper-spring-boot-starter</artifactId>
-			<version>1.2.12</version>
 		</dependency>
 
 		<!--XSSFWorkbook-->
