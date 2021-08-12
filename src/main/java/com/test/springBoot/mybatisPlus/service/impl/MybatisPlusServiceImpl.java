@@ -17,4 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class MybatisPlusServiceImpl extends ServiceImpl<MybatisPlusMapper, MybatisPlus> implements IMybatisPlusService {
 
+    @Override
+    public void getAndUpdate(Long id) {
+        MybatisPlus mybatisPlus = getById(1420715833606426626L);
+        mybatisPlus.setAge(21);
+        updateById(mybatisPlus);
+    }
 }

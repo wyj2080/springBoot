@@ -1,7 +1,6 @@
 package com.test.springBoot.mybatisPlus.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,6 +9,7 @@ import com.test.springBoot.mybatisPlus.entity.MybatisPlusDTO;
 import com.test.springBoot.mybatisPlus.service.IMybatisPlusService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -34,6 +34,7 @@ public class MybatisPlusController {
 
     @GetMapping("/list")
     public List<MybatisPlus> findList(){
+
         return mybatisPlusService.list();
     }
 
@@ -46,13 +47,25 @@ public class MybatisPlusController {
         config.setAmount(BigDecimal.valueOf(Math.random() * 100).setScale(2, BigDecimal.ROUND_HALF_UP));
         config.setKey("aaa");
         config.setStatus(1);
-        mybatisPlus.setConfig(JSONObject.toJSONString(config));
+        mybatisPlus.setConfig(config.toString());
         mybatisPlusService.save(mybatisPlus);
     }
 
     @PutMapping("/update")
     public void update(@RequestBody MybatisPlus mybatisPlus){
         mybatisPlusService.updateById(mybatisPlus);
+    }
+
+    /**
+     * 乐观锁
+     */
+    @GetMapping("/version")
+    @Transactional(rollbackFor = Exception.class)
+    public void version() throws Exception {
+        //先get再更新，会自动带上get得到的version，update ... where version=?
+        //update(entity, wrapper) 方法下, wrapper 不能复用!!!
+        mybatisPlusService.getAndUpdate(1420715833606426626L);
+        throw new Exception("aaa");
     }
 
     @GetMapping("/delete")

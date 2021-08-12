@@ -13,6 +13,8 @@ import com.test.springBoot.mybatisPlus.entity.MybatisPlus;
  */
 public interface IMybatisPlusService extends IService<MybatisPlus> {
 
+    void getAndUpdate(Long id);
+
 
 
 }
