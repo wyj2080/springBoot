@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @MapperScan({"com.test.springBoot.*.mapper"})
@@ -16,6 +17,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableCreateCacheAnnotation
 //异步注解
 @EnableAsync
+//事物注解
+@EnableTransactionManagement
 public class Application extends SpringBootServletInitializer {
 	/**
 	 * 实现SpringBootServletInitializer
