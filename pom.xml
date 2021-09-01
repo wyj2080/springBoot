@@ -17,7 +17,7 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 	</properties>
 
 	<dependencies>
@@ -235,11 +235,18 @@
 			<version>2.1.2</version>
 		</dependency>
 
-		<!-- clickhouse -->
+<!--		&lt;!&ndash; clickhouse &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>ru.yandex.clickhouse</groupId>-->
+<!--			<artifactId>clickhouse-jdbc</artifactId>-->
+<!--			<version>0.2.4</version>-->
+<!--		</dependency>-->
+
+		<!--sa-token权限认证-->
 		<dependency>
-			<groupId>ru.yandex.clickhouse</groupId>
-			<artifactId>clickhouse-jdbc</artifactId>
-			<version>0.2.4</version>
+			<groupId>cn.dev33</groupId>
+			<artifactId>sa-token-spring-boot-starter</artifactId>
+			<version>1.25.0</version>
 		</dependency>
 
 
