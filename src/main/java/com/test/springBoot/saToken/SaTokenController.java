@@ -28,13 +28,24 @@ public class SaTokenController {
     public String login(@RequestParam("username")String username,
                              @RequestParam("password")String password,
                         HttpServletResponse response) {
-        if(username.equals("a") && password.equals("1")){
-            StpUtil.login("a");
-            response.setHeader("x-enterprise-id","myEn");
-            return "登录成功";
-        }else{
-            return "登录失败";
+        String result = "";
+        switch (username){
+            case "d1":if(password.equals("d1")){
+                result = "d1";
+            }else{
+                result = "密码错误";
+            }break;
+            case "d2":if(password.equals("d2")){
+                result = "d2";
+            }else{
+                result = "密码错误";
+            }break;
+            default:result="账号不存在";
         }
+        if(!result.equals("密码错误") && !result.equals("账号不存在")){
+            StpUtil.login(username);
+        }
+        return result;
     }
 
     @ApiOperation(value = "测试", notes = "测试")
