@@ -262,6 +262,13 @@
 			<version>2.11.1</version>
 		</dependency>
 
+		<!--流程编排-->
+		<dependency>
+			<groupId>com.yomahub</groupId>
+			<artifactId>liteflow-spring-boot-starter</artifactId>
+			<version>2.6.3</version>
+		</dependency>
+
 
 
 
