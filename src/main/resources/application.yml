@@ -119,6 +119,8 @@ liteflow:
   #监控日志打印每过多少时间执行一次，默认值为300000毫秒，也就是5分钟
   monitor.period: 300000
 
+#sentry:
+#  dsn: http://4bab26c23801484bb32a563a7aea78bf@ip:9000/2
 
 
 

@@ -269,6 +269,13 @@
 			<version>2.6.3</version>
 		</dependency>
 
+		<!--监控系统-->
+		<dependency>
+			<groupId>io.sentry</groupId>
+			<artifactId>sentry-spring-boot-starter</artifactId>
+			<version>4.3.0</version>
+		</dependency>
+
 
 
 
