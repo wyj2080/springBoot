@@ -12,7 +12,15 @@ import org.springframework.stereotype.Component;
 public class FlowB extends NodeComponent {
     @Override
     public void process() throws Exception {
-        Thread.sleep(2200);
+//        Thread.sleep(2200);
         System.out.println("this b");
+        MySlot slot = getSlot();
+        System.out.println("b:"+slot.toString());
+//        for (int i = 0; i < 10000; i++) {
+//            System.out.println("b"+i);
+//            if(i==9000){
+//                throw new Exception("cc");
+//            }
+//        }
     }
 }

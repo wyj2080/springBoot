@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
  * @description
  * @date 2021/11/3
  */
-@Component("c")
-public class FlowC extends NodeComponent {
+@Component("d")
+public class FlowD extends NodeComponent {
     @Override
     public void process() throws Exception {
-        System.out.println("this c");
+        System.out.println("this d");
         for (int i = 0; i < 10000; i++) {
-            System.out.println("c"+i);
+            System.out.println("d"+i);
         }
     }
 }

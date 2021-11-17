@@ -108,8 +108,8 @@ liteflow:
   when-queue-limit: 512
   #是否在启动的时候就解析规则，默认为true
   parse-on-start: true
-  #全局重试次数，默认为0
-  retry-count: 0
+  #全局重试次数，默认为0。该次数后还错,整条流程结束
+  retry-count: 1
   #是否开启监控log打印，默认值为false
   monitor.enable-log: true
   #监控队列存储大小，默认值为200
