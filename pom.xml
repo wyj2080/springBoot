@@ -61,9 +61,9 @@
 
 		<!--sql分析打印-->
 		<dependency>
-			<groupId>p6spy</groupId>
-			<artifactId>p6spy</artifactId>
-			<version>3.9.1</version>
+			<groupId>com.github.gavlyukovskiy</groupId>
+			<artifactId>p6spy-spring-boot-starter</artifactId>
+			<version>1.7.1</version>
 		</dependency>
 
 
