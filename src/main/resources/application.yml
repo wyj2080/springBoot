@@ -16,8 +16,28 @@ spring:
     username: us
     password: ps
     driver-class-name: com.mysql.cj.jdbc.Driver
+    #druid配置
+    druid:
+      initial-size: 8 #初始化连接
+      max-active: 16 #池中最大连接数，包括闲置和使用中的连接
+      min-idle: 8 #池中维护的最小空闲连接数
+      max-wait: 6000 #等待池中对象，设置1好像也不报错
+      filters: wall #防止sql注入，待测试
+      #监控过滤
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*,"
+      #监控
+      stat-view-servlet:
+        enabled: true
+        login-username: admin
+        login-password: 123456
+        reset-enable: false
+        url-pattern: /druid/*
 
-#clickhouse数据源
+
+  #clickhouse数据源
 #  datasource:
 #    url: jdbc:clickhouse://ip:8123/dbname?socket_timeout=300000&createDatabaseIfNotExist=true&autoReconnect=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&useUnicode=truei&rewriteBatchedStatements=true&allowMultiQueries=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai
 #    username: un
