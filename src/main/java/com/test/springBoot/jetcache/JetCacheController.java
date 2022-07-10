@@ -24,14 +24,29 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/jetcache")
 public class JetCacheController {
     //DO类需要实现序列化，内部类也要
-    // expire:过期时间
+    // expire:过期时间(秒)
     // localLimit内存中的数量
     // cacheType默认远程
     //不同类里名字相同，会共享
-    @CreateCache(name = "JetCacheController.userCache", expire = 50, cacheType = CacheType.BOTH, localLimit = 50)
+    @CreateCache(name = "User", expire = 20, cacheType = CacheType.BOTH, localLimit = 50)
     private Cache<Long, UserDO> userCache;
     @Autowired
     private JetCacheService jetCacheService;
+
+    @RequestMapping(value = "/put", method = RequestMethod.GET)
+    public void put() throws Exception {
+        UserDO userDO = new UserDO();
+        userDO.setId(1001L);
+        userDO.setName("小五");
+        userDO.setAge(19);
+        //存
+        userCache.put(userDO.getId(), userDO);
+    }
+
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    public String get() throws Exception {
+        return userCache.get(1001L).toString();
+    }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public void test() throws Exception {
@@ -70,16 +85,6 @@ public class JetCacheController {
         });
         System.out.println(hasRun);
 
-    }
-
-    @RequestMapping(value = "/test3", method = RequestMethod.GET)
-    public void test3() throws Exception {
-        System.out.println(userCache.get(1001L));
-    }
-
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public void get() throws Exception {
-        System.out.println(userCache.get(1001L).toString());
     }
 
     /**

@@ -68,24 +68,30 @@ minio:
 
 
 jetcache:
-  statIntervalMinutes: 15
+  statIntervalMinutes: 15 #统计间隔，0不统计
   areaInCacheName: false
   local:
     default:
       type: linkedhashmap
+      limit: 1000
       keyConvertor: fastjson
+      expireAfterWriteInMillis: 86400000
   remote:
     default:
       type: redis
       keyConvertor: fastjson
       valueEncoder: java
       valueDecoder: java
+      expireAfterWriteInMillis: 86400000 #过期时间
       poolConfig:
         minIdle: 5
         maxIdle: 20
         maxTotal: 50
       host: ip
       port: 6379
+      password: ps
+      #sentinels: 127.0.0.1:26379 , 127.0.0.1:26380, 127.0.0.1:26381
+      #masterName: mymaster
 
 mybatis-plus:
   global-config:
