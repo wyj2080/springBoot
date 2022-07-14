@@ -87,9 +87,13 @@ jetcache:
         minIdle: 5
         maxIdle: 20
         maxTotal: 50
-      host: ip
-      port: 6379
-      password: ps
+#      host: ip
+#      port: 6379
+      password: r123456 #访问redis密码
+      sentinels: ip:26379
+      sentinelPassword: r123456 #需要升级redis到4.2.3，且jetcache到2.7.0以上
+      masterName: myMaster
+      #sentinel配置文件/resources/redisConfig，r1:master,r2-3:slave，和3个sentinel
       #sentinels: 127.0.0.1:26379 , 127.0.0.1:26380, 127.0.0.1:26381
       #masterName: mymaster
 
