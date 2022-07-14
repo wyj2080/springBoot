@@ -1,10 +1,12 @@
 package com.test.springBoot.redis.controller;
 
+import io.swagger.annotations.Api;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import redis.clients.jedis.Jedis;
+import redis.clients.jedis.*;
 
 import java.util.*;
 
@@ -16,6 +18,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/redis")
+@Api(tags = "redis")
 public class LinkRedis {
 
     @Value("${redis.servers}")
@@ -27,13 +30,25 @@ public class LinkRedis {
     @RequestMapping(value = "/send", method = RequestMethod.GET)
     public Map<String, Object> send() throws InterruptedException {
         //连接 Redis 服务
-        Jedis jedis = new Jedis("192.168.0.100", 6379);
-        jedis.auth(password);
+//        Jedis jedis = new Jedis("ip", 7000);
+        Set<HostAndPort> nodes = new HashSet<>();
+        nodes.add(new HostAndPort("ip", 7000));
+        nodes.add(new HostAndPort("ip", 7001));
+        nodes.add(new HostAndPort("ip", 7002));
+//        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        GenericObjectPoolConfig<Connection> poolConfig = new GenericObjectPoolConfig<>();
+        poolConfig.setMaxWaitMillis(5000);
+        poolConfig.setMaxIdle(8);
+        poolConfig.setMinIdle(0);
+        JedisCluster jedis = new JedisCluster(nodes, 5000, 5000, 5000, password, poolConfig);
+
+//        jedis.auth(password);
         System.out.println("连接成功");
         //查看服务是否运行
-        System.out.println("服务正在运行: "+jedis.ping());
+//        System.out.println("服务正在运行: "+jedis.ping());
         jedis.set("username","dapeng");
         jedis.set("password","123456");
+
         jedis.close();
         System.out.println("end");
         return new HashMap<>();
