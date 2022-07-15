@@ -24,14 +24,25 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/jetcache")
 public class JetCacheController {
     //DO类需要实现序列化，内部类也要
-    // expire:过期时间(秒)
+    // expire:过期时间(秒)跟着cacheType
     // localLimit内存中的数量
     // cacheType默认远程
     //不同类里名字相同，会共享
-    @CreateCache(name = "User", expire = 20, cacheType = CacheType.BOTH, localLimit = 50)
+    @CreateCache(name = "User", expire = 600, cacheType = CacheType.BOTH, localLimit = 50)
     private Cache<Long, UserDO> userCache;
     @Autowired
     private JetCacheService jetCacheService;
+
+    /**
+     * redis sentinel哨兵集群，测各种情况下的数据
+     * 主:master,从:slave,哨兵:sentinel
+     * 采用1主，2从，3哨兵。共6个服务(如果放在外网各自通讯一天至少1.5G流量)
+     * 假设2台机器间隔10ms，100个数据put就要1秒钟。所以数据量大用putAll
+     * 1.全部redis挂掉。get操作不会同步本地到redis。内存里有就直接返回了
+     * 2.挂掉从，再启动。自动从主同步数据
+     * 3.
+     */
+    //todo 哨兵提醒：redis挂掉，sentinel挂掉
 
     @RequestMapping(value = "/put", method = RequestMethod.GET)
     public void put() throws Exception {
