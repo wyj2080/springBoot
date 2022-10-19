@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flow>
     <chain name="chain1">
-        <then group="t1" value="a"/>
-        <when group="t1" value="b"/>
+        <when value="a,b"/>
+        <when value="c,d"/>
 <!--        <when group="t1"  value="c,d"/>-->
 <!--        <when group="t1" value="c,d"/>-->
     </chain>

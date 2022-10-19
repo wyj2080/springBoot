@@ -1,6 +1,5 @@
 package com.test.springBoot.mybatisPlus;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -26,23 +25,26 @@ public class DynamicDatasourceInterceptor implements HandlerInterceptor {
 //        String headerDs = request.getHeader("ds");
 //        Object sessionDs = request.getSession().getAttribute("ds");
         String s = requestURI.replaceFirst("/", "");
-        if(!s.contains("sa-token")){
-            boolean result = StpUtil.isLogin();
-            if(!result){
-                throw new Exception("请先登录");
-            }
-        }else{
-            return true;
-        }
+//        if(!s.contains("sa-token")){
+//            boolean result = StpUtil.isLogin();
+//            if(!result){
+//                throw new Exception("请先登录");
+//            }
+//        }else{
+//            return true;
+//        }
 //
 //        boolean isLogin = StpUtil.isLogin();
 //        if(!isLogin && !requestURI.equals("/doc.html")){
 //            throw new Exception("未登录");
 //        }
-        System.out.println("url:"+s);
+//        System.out.println("url:"+s);
         String dsKey = "master";
         String tenantId = request.getHeader("tenantId");
-        if (tenantId.equals("d1")) {
+        if(tenantId == null || tenantId.equals("")){
+            dsKey = "master";
+        }
+        else if (tenantId.equals("d1")) {
             dsKey = "esdb_db1";
         } else if (tenantId.equals("d2")) {
             dsKey = "esdb_db2";

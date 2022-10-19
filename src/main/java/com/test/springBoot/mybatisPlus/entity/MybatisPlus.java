@@ -1,13 +1,18 @@
 package com.test.springBoot.mybatisPlus.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -20,16 +25,16 @@ import java.time.LocalDateTime;
  * @since 2021-07-27
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName(value = "mybatis_plus")
+@TableName(value = "mybatis_plus", autoResultMap = true)
 @ApiModel(value="MybatisPlus对象", description="")
-public class MybatisPlus extends Model<MybatisPlus> {
+public class MybatisPlus  implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "id")
     @TableId("id")
+//    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     @ApiModelProperty(value = "名称")
@@ -50,6 +55,8 @@ public class MybatisPlus extends Model<MybatisPlus> {
      * TableField里typeHandler = FastjsonTypeHandler.class
      */
     @ApiModelProperty(value = "配置")
+    @TableField(typeHandler = FastjsonTypeHandler.class)
+//    @TableField(typeHandler = JacksonTypeHandler.class)
     private String config;
 
     @TableField("create_time")
@@ -58,10 +65,18 @@ public class MybatisPlus extends Model<MybatisPlus> {
     @TableField("update_time")
     private LocalDateTime updateTime;
 
-    @TableLogic(value = "0", delval = "1")
+//    @TableLogic(value = "0", delval = "1")
     private Integer deleted;
 
     @Version
     private Integer version;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Config implements Serializable{
+        private String a;
+        private String b;
+    }
 
 }

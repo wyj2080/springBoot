@@ -16,11 +16,8 @@ public class FlowB extends NodeComponent {
         System.out.println("this b");
         MySlot slot = getSlot();
         System.out.println("b:"+slot.toString());
-//        for (int i = 0; i < 10000; i++) {
-//            System.out.println("b"+i);
-//            if(i==9000){
-//                throw new Exception("cc");
-//            }
-//        }
+        for (int i = 0; i < 10000; i++) {
+            System.out.println("b"+i);
+        }
     }
 }

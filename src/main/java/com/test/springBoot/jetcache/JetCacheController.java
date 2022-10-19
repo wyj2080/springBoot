@@ -9,9 +9,7 @@ import com.test.springBoot.java8.UserDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,6 +48,7 @@ public class JetCacheController {
         userDO.setId(1001L);
         userDO.setName("小五");
         userDO.setAge(19);
+
         //存
         userCache.put(userDO.getId(), userDO);
     }

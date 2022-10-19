@@ -1,5 +1,6 @@
 package com.test.springBoot.java8;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -25,4 +26,12 @@ public class UserDO implements Serializable {
 
     /**车*/
     private CarDO carDO;
+
+    private Car car = new Car("小车");
+
+    @Data
+    @AllArgsConstructor
+    public static class Car implements Serializable{
+        private String name;
+    }
 }

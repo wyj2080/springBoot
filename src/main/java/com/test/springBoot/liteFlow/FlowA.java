@@ -14,13 +14,13 @@ public class FlowA extends NodeComponent {
     public void process() throws Exception {
 
         System.out.println("this a"+this.getTag());
-//        for (int i = 0; i < 10000; i++) {
-//            System.out.println("a"+i);
-//        }
-        MySlot slot = getSlot();
-        System.out.println("a:"+slot.toString());
-        slot.setAge(18);
-        slot.setName("哈哈");
+        for (int i = 0; i < 10000; i++) {
+            System.out.println("a"+i);
+        }
+//        MySlot slot = getSlot();
+//        System.out.println("a:"+slot.toString());
+//        slot.setAge(18);
+//        slot.setName("哈哈");
 
     }
 }
