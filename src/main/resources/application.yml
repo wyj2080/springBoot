@@ -1,6 +1,3 @@
-mybatis:
-  mapperLocations: classpath:mapper/*.xml
-
 kafka:
   servers: 173.82.105.141:9092,173.82.238.114:9092
 
@@ -10,12 +7,34 @@ kafka:
 #    producer:
 #      key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
 #      value-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+
 spring:
   datasource:
+    username: root
+    password: password
     url: jdbc:mysql://ip:3306/p2p?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
-    username: us
-    password: ps
     driver-class-name: com.mysql.cj.jdbc.Driver
+    #动态数据源
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: true #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        master:
+          url: jdbc:mysql://ip:3306/p2p?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+          username: root
+          password: password
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        esdb_db1:
+          url: jdbc:mysql://ip:3306/esdb_db1?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+          username: root
+          password: password
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        esdb_db2:
+          url: jdbc:mysql://ip:3306/esdb_db2?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+          username: root
+          password: password
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
     #druid配置
     druid:
       initial-size: 8 #初始化连接
@@ -37,12 +56,35 @@ spring:
         url-pattern: /druid/*
 
 
-  #clickhouse数据源
-#  datasource:
-#    url: jdbc:clickhouse://ip:8123/dbname?socket_timeout=300000&createDatabaseIfNotExist=true&autoReconnect=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&useUnicode=truei&rewriteBatchedStatements=true&allowMultiQueries=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai
-#    username: un
-#    password: ps
-#    driver-class-name: ru.yandex.clickhouse.ClickHouseDriver
+
+  # redis配置 (sa-token用)
+  redis:
+    # Redis数据库索引（默认为0）
+    database: 1
+    # Redis服务器地址
+    host: ip
+    # Redis服务器连接端口
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    password: r123456
+    # 连接超时时间（毫秒）
+    timeout: 1000ms
+    lettuce:
+      pool:
+        # 连接池最大连接数
+        max-active: 200
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+        # 连接池中的最大空闲连接
+        max-idle: 10
+        # 连接池中的最小空闲连接
+        min-idle: 0
+
+  #  datasource:
+  #    url: jdbc:clickhouse://ip:8123/p2p?socket_timeout=300000&createDatabaseIfNotExist=true&autoReconnect=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&useUnicode=truei&rewriteBatchedStatements=true&allowMultiQueries=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai
+  #    username: admin
+  #    password: ch123456
+  #    driver-class-name: ru.yandex.clickhouse.ClickHouseDriver
 
   #如果用@RabbitListener，下面的变量名要完全对的上，而且放在spring里面
   rabbitmq:
@@ -50,16 +92,17 @@ spring:
     username: tu
     password: tu
     port: 5672
-    host: 149.248.6.175
+    host: ip
     publisher-confirms: true
     publisher-returns: true
     listener:
       simple:
-        acknowledge-mode: manual  #手动确认
+        acknowledge-mode: auto  #手动确认
         #prefetch: 1
 
 redis:
   servers: ip:6379
+  password: r123456
 
 minio:
   endPoint: http://ip:9000
@@ -82,17 +125,17 @@ jetcache:
       keyConvertor: fastjson
       valueEncoder: java
       valueDecoder: java
-      expireAfterWriteInMillis: 86400000 #过期时间
+      expireAfterWriteInMillis: 86400000 #过期时间(毫秒)
       poolConfig:
         minIdle: 5
         maxIdle: 20
         maxTotal: 50
-#      host: ip
-#      port: 6379
+      host: ip
+      port: 6379
       password: r123456 #访问redis密码
-      sentinels: ip:26379
-      sentinelPassword: r123456 #需要升级redis到4.2.3，且jetcache到2.7.0以上
-      masterName: myMaster
+#      sentinels: ip:26379 , ip:26479, ip:26579
+#      sentinelPassword: r123456 #需要升级redis到4.2.3，且jetcache到2.7.0以上
+#      masterName: myMaster
       #sentinel配置文件/resources/redisConfig，r1:master,r2-3:slave，和3个sentinel
       #sentinels: 127.0.0.1:26379 , 127.0.0.1:26380, 127.0.0.1:26381
       #masterName: mymaster
@@ -110,9 +153,9 @@ mybatis-plus:
 # Sa-Token配置，不是必须写的
 sa-token:
   # token名称 (同时也是cookie名称)
-  token-name: myToken
+  token-name: token
   # token有效期，单位s 默认30天, -1代表永不过期
-  timeout: 120
+  timeout: 3600
   # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
   activity-timeout: -1
   # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
@@ -128,29 +171,29 @@ liteflow:
   rule-source: config/flow.xml
   #-----------------以下非必须-----------------
   #liteflow是否开启，默认为true
-  enable: true
-  #zkNode的节点，只有使用zk作为配置源的时候才起作用
-  zk-node: /lite-flow/flow
-  #slot的数量，默认值为1024
-  slot-size: 1024
-  #异步线程最长的等待时间秒(只用于when)，默认值为15
-  when-max-wait-second: 15
-  #异步线程池最大线程数，默认为4
-  when-max-workers: 4
-  #异步线程池等待队列数，默认为512
-  when-queue-limit: 512
-  #是否在启动的时候就解析规则，默认为true
-  parse-on-start: true
-  #全局重试次数，默认为0。该次数后还错,整条流程结束
-  retry-count: 1
-  #是否开启监控log打印，默认值为false
-  monitor.enable-log: true
-  #监控队列存储大小，默认值为200
-  monitor.queue-limit: 300
-  #监控一开始延迟多少执行，默认值为300000毫秒，也就是5分钟
-  monitor.delay: 10000
-  #监控日志打印每过多少时间执行一次，默认值为300000毫秒，也就是5分钟
-  monitor.period: 300000
+#  enable: true
+#  #zkNode的节点，只有使用zk作为配置源的时候才起作用
+#  zk-node: /lite-flow/flow
+#  #slot的数量，默认值为1024
+#  slot-size: 1024
+#  #异步线程最长的等待时间秒(只用于when)，默认值为15
+#  when-max-wait-second: 15
+#  #异步线程池最大线程数，默认为4
+#  when-max-workers: 4
+#  #异步线程池等待队列数，默认为512
+#  when-queue-limit: 512
+#  #是否在启动的时候就解析规则，默认为true
+#  parse-on-start: true
+#  #全局重试次数，默认为0。该次数后还错,整条流程结束
+#  retry-count: 1
+#  #是否开启监控log打印，默认值为false
+#  monitor.enable-log: true
+#  #监控队列存储大小，默认值为200
+#  monitor.queue-limit: 300
+#  #监控一开始延迟多少执行，默认值为300000毫秒，也就是5分钟
+#  monitor.delay: 10000
+#  #监控日志打印每过多少时间执行一次，默认值为300000毫秒，也就是5分钟
+#  monitor.period: 300000
 
 #sentry:
 #  dsn: http://4bab26c23801484bb32a563a7aea78bf@ip:9000/2
