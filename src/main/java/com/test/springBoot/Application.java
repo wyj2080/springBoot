@@ -1,6 +1,5 @@
 package com.test.springBoot;
 
-import com.alicp.jetcache.anno.config.EnableCreateCacheAnnotation;
 import com.alicp.jetcache.anno.config.EnableMethodCache;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -14,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan({"com.test.springBoot.*.mapper"})
 //jetCache
 @EnableMethodCache(basePackages = "com.test.springBoot")
-@EnableCreateCacheAnnotation
+//@EnableCreateCacheAnnotation //2.7之前用
 //异步注解
 @EnableAsync
 //事物注解

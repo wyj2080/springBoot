@@ -1,15 +1,20 @@
 package com.test.springBoot.jetcache;
 
 import com.alicp.jetcache.Cache;
+import com.alicp.jetcache.CacheManager;
 import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.CacheUpdate;
 import com.alicp.jetcache.anno.Cached;
-import com.alicp.jetcache.anno.CreateCache;
+import com.alicp.jetcache.template.QuickConfig;
 import com.test.springBoot.java8.UserDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import javax.annotation.PostConstruct;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,10 +31,23 @@ public class JetCacheController {
     // localLimit内存中的数量
     // cacheType默认远程
     //不同类里名字相同，会共享
-    @CreateCache(name = "User", expire = 600, cacheType = CacheType.BOTH, localLimit = 50)
+//    @CreateCache(name = "User", expire = 600, cacheType = CacheType.BOTH, localLimit = 50)
     private Cache<Long, UserDO> userCache;
+    //2.7开始用这个,之前用@CreateCache
+    @Autowired
+    private CacheManager cacheManager;
     @Autowired
     private JetCacheService jetCacheService;
+
+    @PostConstruct
+    public void init() {
+        QuickConfig qc = QuickConfig.newBuilder("userCache")
+                .expire(Duration.ofSeconds(10))
+                .cacheType(CacheType.BOTH) // two level cache
+                .syncLocal(true) // invalidate local cache in all jvm process after update
+                .localLimit(50).build();
+        userCache = cacheManager.getOrCreateCache(qc);
+    }
 
     /**
      * redis sentinel哨兵集群，测各种情况下的数据
@@ -42,6 +60,11 @@ public class JetCacheController {
      */
     //todo 哨兵提醒：redis挂掉，sentinel挂掉
 
+    /**
+     * put会存到本地和redis。
+     * 如果redis挂掉重启第一次put/remove会报错，但是能继续执行,内存里生效了
+     * get先读内存，没有就读redis，同时放入内存
+     */
     @RequestMapping(value = "/put", method = RequestMethod.GET)
     public void put() throws Exception {
         UserDO userDO = new UserDO();
@@ -49,13 +72,35 @@ public class JetCacheController {
         userDO.setName("小五");
         userDO.setAge(19);
 
-        //存
+        //存，redis里没有就报错 todo
         userCache.put(userDO.getId(), userDO);
+    }
+
+    @RequestMapping(value = "/put2", method = RequestMethod.GET)
+    public void put2() throws Exception {
+        UserDO userDO = new UserDO();
+        userDO.setId(1002L);
+        userDO.setName("小五");
+        userDO.setAge(19);
+
+        //存，redis里没有就报错 todo
+        userCache.put(userDO.getId(), userDO);
+    }
+
+    @GetMapping(value = "/remove")
+    public void remove() throws Exception {
+        userCache.remove(1001L);
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public String get() throws Exception {
+        UserDO userDO = new UserDO();
+        userDO.setId(1001L);
+        userDO.setName("小五sql");
+        userDO.setAge(19);
         return userCache.get(1001L).toString();
+        //mysql里取
+//        return userCache.computeIfAbsent(1001L, key -> getById(key), false).toString();
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)

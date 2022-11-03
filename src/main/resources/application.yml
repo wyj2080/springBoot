@@ -9,6 +9,10 @@ kafka:
 #      value-serializer-class: org.apache.kafka.common.serialization.StringSerializer
 
 spring:
+  mvc: #springboot版本高了以后knife4j用的还是swagger2起不来，先这样解决
+    pathmatch:
+      # 配置策略
+      matching-strategy: ant-path-matcher
   datasource:
     username: root
     password: password
