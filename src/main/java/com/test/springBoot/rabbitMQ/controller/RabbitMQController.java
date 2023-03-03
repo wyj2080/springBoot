@@ -5,8 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
 import com.test.springBoot.order.entity.Order;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 /**
@@ -93,9 +96,13 @@ public class RabbitMQController {
 
     }
 
-
-
-    @RabbitListener(queues = "rabbit_test")
+    /**
+     * 自动创建队列
+     */
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(value = "rabbit_test", durable = "true", autoDelete = "false", arguments = {}),
+            exchange = @Exchange(value = "rabbit_test.exchange", type = ExchangeTypes.DIRECT),
+            key = "rabbit_test_view"))
     public void ctest(Message message, Channel channel) throws IOException {
         MessageProperties properties = message.getMessageProperties();
         long tag = properties.getDeliveryTag();
