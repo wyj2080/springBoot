@@ -8,6 +8,11 @@ kafka:
 #      key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
 #      value-serializer-class: org.apache.kafka.common.serialization.StringSerializer
 
+##指定日志输出，tomcat自带日志
+#logging:
+#  file:
+#    name: D://log.txt
+
 spring:
   mvc: #springboot版本高了以后knife4j用的还是swagger2起不来，先这样解决
     pathmatch:

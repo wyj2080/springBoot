@@ -1,15 +1,13 @@
 package com.test.springBoot.annotation;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.util.Date;
+import java.util.List;
 
 /**
  * @Description: 各种注解
@@ -19,6 +17,7 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping("/annotation")
+@Validated
 public class AnnotationController {
 
 
@@ -29,4 +28,13 @@ public class AnnotationController {
 
     }
 
+    /**
+     * 验证list时，controller类上@Validated
+     */
+    @RequestMapping(value = "/validList", method = RequestMethod.GET)
+    public void validList(@RequestBody @Valid List<ValidDO> list){
+        System.out.println(list);
+        System.out.println(list.toString());
+
+    }
 }
