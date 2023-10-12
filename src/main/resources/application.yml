@@ -14,6 +14,11 @@ kafka:
 #    name: D://log.txt
 
 spring:
+  application:
+    name: mySpingBoot
+  #启用测试配置
+  profiles:
+    active: dev
   mvc: #springboot版本高了以后knife4j用的还是swagger2起不来，先这样解决
     pathmatch:
       # 配置策略
